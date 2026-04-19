@@ -1,4 +1,4 @@
-# EE3165 - Digital Design Verification: Lab 1
+# EE3165 - Digital Design Verification: Lab 2
 
 This repository contains the RTL designs and testbenches for **Lab 1: Hardware Description and Digital Design Verification** as part of the IC Design course at Ho Chi Minh City University of Technology (HCMUT).
 
