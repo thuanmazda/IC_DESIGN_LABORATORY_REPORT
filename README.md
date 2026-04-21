@@ -2,6 +2,8 @@
 
 This repository contains the RTL designs, synthesis scripts, and gate-level simulation testbenches for **Lab 2: Synthesis and Standard Cell** as part of the IC Design course at Ho Chi Minh City University of Technology (HCMUT).
 
+UPDATE: 10:40AM 21-04-2026
+
 ## Project Overview
 This project covers the complete digital design flow from RTL design to logic synthesis and gate-level simulation (GLS). Using Cadence tools, the lab investigates the characteristics and performance of standard cells in a 45nm technology library across eight different Process, Voltage, and Temperature (PVT) corners.
 
