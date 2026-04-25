@@ -33,12 +33,12 @@
 \contentsline {subsection}{\numberline {2.2}Area parameters}{36}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Power parameters}{37}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Delay parameters}{37}{subsection.2.4}%
-\contentsline {paragraph}{1. Khảo sát HVT tại điện áp thấp (VDD = 1.0\,V)}{38}{table.caption.63}%
-\contentsline {paragraph}{2. Khảo sát HVT tại điện áp danh định (VDD = 1.2\,V)}{38}{figure.caption.64}%
-\contentsline {paragraph}{1. Khảo sát LVT tại điện áp thấp (VDD = 1.0\,V)}{39}{figure.caption.65}%
-\contentsline {paragraph}{2. Khảo sát LVT tại điện áp danh định (VDD = 1.2\,V)}{39}{figure.caption.66}%
+\contentsline {paragraph}{1. Khảo sát HVT tại điện áp thấp (VDD = 1.0\,V)}{38}{table.caption.62}%
+\contentsline {paragraph}{2. Khảo sát HVT tại điện áp danh định (VDD = 1.2\,V)}{38}{figure.caption.63}%
+\contentsline {paragraph}{1. Khảo sát LVT tại điện áp thấp (VDD = 1.0\,V)}{39}{figure.caption.64}%
+\contentsline {paragraph}{2. Khảo sát LVT tại điện áp danh định (VDD = 1.2\,V)}{39}{figure.caption.65}%
 \contentsline {subsection}{\numberline {2.5}Setup and Hold time verification}{40}{subsection.2.5}%
-\contentsline {paragraph}{1. Kiểm chứng HVT tại VDD = 1.0\,V}{41}{table.caption.68}%
-\contentsline {paragraph}{2. Kiểm chứng HVT tại VDD = 1.2\,V}{43}{figure.caption.70}%
-\contentsline {paragraph}{1. Kiểm chứng LVT tại VDD = 1.0\,V}{44}{figure.caption.72}%
-\contentsline {paragraph}{2. Kiểm chứng LVT tại VDD = 1.2\,V}{45}{figure.caption.74}%
+\contentsline {paragraph}{1. Kiểm chứng HVT tại VDD = 1.0\,V}{41}{table.caption.67}%
+\contentsline {paragraph}{2. Kiểm chứng HVT tại VDD = 1.2\,V}{43}{figure.caption.69}%
+\contentsline {paragraph}{1. Kiểm chứng LVT tại VDD = 1.0\,V}{44}{figure.caption.71}%
+\contentsline {paragraph}{2. Kiểm chứng LVT tại VDD = 1.2\,V}{45}{figure.caption.73}%

@@ -331,9 +331,9 @@ Ngược lại, các cell LVT cho tốc độ chuyển mạch nhanh hơn nhờ �
 
 % ----------- KHỐI LVT ----------------
 fast\_vdd1v0\_basicCells\_lvt & 0.684 & 7.8029e-09 & 0.003 & 0.003 \\ \hline
-fast\_vdd1v2\_basicCells\_lvt & 0.684 & 1.1353e-08 & 0.002 & 0.002 \\ \hline
-slow\_vdd1v0\_basicCells\_lvt & 0.684 & 5.4851e-09 & 0.007 & 0.012 \\ \hline
-slow\_vdd1v2\_basicCells\_lvt & 0.684 & 7.9701e-09 & 0.005 & 0.007 \\ \hline
+fast\_vdd1v2\_basicCells\_lvt & 0.684 & 1.07250e-08 & 0.003 & 0.003 \\ \hline
+slow\_vdd1v0\_basicCells\_lvt & 0.684 & 4.28894e-09 & 0.006 & 0.007 \\ \hline
+slow\_vdd1v2\_basicCells\_lvt & 0.684 & 6.20997e-09 & 0.004 & 0.005 \\ \hline
 
 \end{tabular}
 }
@@ -474,28 +474,28 @@ Nhóm tiếp tục thực hiện khảo sát đặc tính của cổng OR2 trên
 \centering
 \renewcommand{\arraystretch}{1.3}
 \resizebox{\textwidth}{!}{
-\begin{tabular}{|l|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-& \multicolumn{2}{c|}{\textbf{Delay Parameter}} \\
-\cline{4-5}
-
+& \multicolumn{2}{c|}{\textbf{Delay A$\rightarrow$Y}} 
+& \multicolumn{2}{c|}{\textbf{Delay B$\rightarrow$Y}} \\
+\cline{4-7}
 & & 
-& \textbf{Rising Delay (ns)} 
-& \textbf{Falling Delay (ns)} \\
+& \textbf{Rising (ns)} & \textbf{Falling (ns)}
+& \textbf{Rising (ns)} & \textbf{Falling (ns)} \\
 \hline
-
+ 
 % ----------- KHỐI HVT ----------------
-fast\_vdd1v0\_basicCells\_hvt & ... & ... & ... & ... \\ \hline
-fast\_vdd1v2\_basicCells\_hvt & ... & ... & ... & ... \\ \hline
-slow\_vdd1v0\_basicCells\_hvt & ... & ... & ... & ... \\ \hline
-slow\_vdd1v2\_basicCells\_hvt & ... & ... & ... & ... \\ \hline
-
+fast\_vdd1v0\_basicCells\_hvt & 1.368 & 1.73733e-08 & 0.017 & 0.029 & 0.015 & 0.026 \\ \hline
+fast\_vdd1v2\_basicCells\_hvt & 1.368 & 2.53194e-08 & 0.013 & 0.021 & 0.011 & 0.019 \\ \hline
+slow\_vdd1v0\_basicCells\_hvt & 1.368 & 1.14746e-08 & 0.077 & 0.099 & 0.065 & 0.088 \\ \hline
+slow\_vdd1v2\_basicCells\_hvt & 1.368 & 1.68838e-08 & 0.037 & 0.050 & 0.031 & 0.044 \\ \hline
+ 
 \end{tabular}
 }
-\caption{Tổng hợp thông số Diện tích, Công suất và Độ trễ của cổng OR2 qua 8 process corners.}
+\caption{Tổng hợp thông số Diện tích, Công suất và Độ trễ của cổng OR2 qua 8 process corners (HVT).}
 \label{tab:exp1_or2_all_params}
 \end{table}
 
@@ -567,25 +567,25 @@ Ngược lại, các cell LVT cho tốc độ chuyển mạch nhanh hơn nhờ �
 \centering
 \renewcommand{\arraystretch}{1.3}
 \resizebox{\textwidth}{!}{
-\begin{tabular}{|l|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-& \multicolumn{2}{c|}{\textbf{Delay Parameter}} \\
-\cline{4-5}
-
+& \multicolumn{2}{c|}{\textbf{Delay A$\rightarrow$Y}} 
+& \multicolumn{2}{c|}{\textbf{Delay B$\rightarrow$Y}} \\
+\cline{4-7}
 & & 
-& \textbf{Rising Delay (ns)} 
-& \textbf{Falling Delay (ns)} \\
+& \textbf{Rising (ns)} & \textbf{Falling (ns)}
+& \textbf{Rising (ns)} & \textbf{Falling (ns)} \\
 \hline
-
+ 
 % ----------- KHỐI LVT ----------------
-fast\_vdd1v0\_basicCells\_lvt & ... & ... & ... & ... \\ \hline
-fast\_vdd1v2\_basicCells\_lvt & ... & ... & ... & ... \\ \hline
-slow\_vdd1v0\_basicCells\_lvt & ... & ... & ... & ... \\ \hline
-slow\_vdd1v2\_basicCells\_lvt & ... & ... & ... & ... \\ \hline
-
+fast\_vdd1v0\_basicCells\_lvt & 1.368 & 2.23841e-08 & 0.011 & 0.017 & 0.009 & 0.015 \\ \hline
+fast\_vdd1v2\_basicCells\_lvt & 1.368 & 3.34466e-08 & 0.009 & 0.014 & 0.008 & 0.012 \\ \hline
+slow\_vdd1v0\_basicCells\_lvt & 1.368 & 1.26400e-08 & 0.033 & 0.052 & 0.027 & 0.045 \\ \hline
+slow\_vdd1v2\_basicCells\_lvt & 1.368 & 1.84242e-08 & 0.022 & 0.034 & 0.018 & 0.030 \\ \hline
+ 
 \end{tabular}
 }
 \caption{Tổng hợp thông số Diện tích, Công suất và Độ trễ của OR2 (Thư viện LVT).}
@@ -725,46 +725,46 @@ Nhóm tiếp tục thực hiện khảo sát đặc tính của cổng NAND2 tr�
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-
+ 
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-
+ 
 & \multicolumn{2}{c|}{\textbf{Delay Parameter A$\rightarrow$Y}}
 & \multicolumn{2}{c|}{\textbf{Delay Parameter B$\rightarrow$Y}} \\
-
+ 
 \cline{4-7}
-
+ 
 & & 
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)}
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)} \\
-
+ 
 \hline
-
+ 
 % ----------- KHỐI HVT ----------------
-
+ 
 fast\_vdd1v0\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.05962e-08 
+& 0.007 & 0.011
+& 0.005 & 0.008 \\ \hline
+ 
 fast\_vdd1v2\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.54143e-08 
+& 0.006 & 0.008
+& 0.004 & 0.006 \\ \hline
+ 
 slow\_vdd1v0\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 7.20719e-09 
+& 0.017 & 0.066
+& 0.012 & 0.050 \\ \hline
+ 
 slow\_vdd1v2\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.04670e-08 
+& 0.010 & 0.029
+& 0.007 & 0.021 \\ \hline
+ 
 \end{tabular}
 }
 
@@ -829,49 +829,49 @@ Các cell LVT cho tốc độ chuyển mạch nhanh hơn nhờ điện áp ngư�
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-
+ 
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-
+ 
 & \multicolumn{2}{c|}{\textbf{Delay Parameter A$\rightarrow$Y}}
 & \multicolumn{2}{c|}{\textbf{Delay Parameter B$\rightarrow$Y}} \\
-
+ 
 \cline{4-7}
-
+ 
 & & 
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)}
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)} \\
-
+ 
 \hline
-
+ 
 % ----------- KHỐI LVT ----------------
-
+ 
 fast\_vdd1v0\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.42490e-08 
+& 0.005 & 0.006
+& 0.004 & 0.005 \\ \hline
+ 
 fast\_vdd1v2\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 2.00986e-08 
+& 0.004 & 0.005
+& 0.003 & 0.004 \\ \hline
+ 
 slow\_vdd1v0\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 7.73734e-09 
+& 0.010 & 0.024
+& 0.007 & 0.018 \\ \hline
+ 
 slow\_vdd1v2\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.11834e-08 
+& 0.008 & 0.015
+& 0.006 & 0.012 \\ \hline
+ 
 \end{tabular}
 }
-
+ 
 \caption{Tổng hợp thông số Diện tích, Công suất và Độ trễ của NAND2 (LVT).}
 \label{tab:exp1_nand2_lvt_params}
 
@@ -998,45 +998,45 @@ Nhóm tiếp tục thực hiện khảo sát đặc tính của cổng NOR2 trê
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-
+ 
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-
+ 
 & \multicolumn{2}{c|}{\textbf{Delay Parameter A$\rightarrow$Y}}
 & \multicolumn{2}{c|}{\textbf{Delay Parameter B$\rightarrow$Y}} \\
-
+ 
 \cline{4-7}
-
+ 
 & & 
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)}
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)} \\
-
+ 
 \hline
-
+ 
 % ----------- KHỐI HVT ----------------
-
+ 
 fast\_vdd1v0\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.07544e-08 
+& 0.011 & 0.007
+& 0.008 & 0.005 \\ \hline
+ 
 fast\_vdd1v2\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.56633e-08 
+& 0.009 & 0.006
+& 0.006 & 0.004 \\ \hline
+ 
 slow\_vdd1v0\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 7.30888e-09 
+& 0.036 & 0.030
+& 0.025 & 0.020 \\ \hline
+ 
 slow\_vdd1v2\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
+& 1.026 & 1.06519e-08 
+& 0.019 & 0.016
+& 0.013 & 0.010 \\ \hline
 
 \end{tabular}
 }
@@ -1102,46 +1102,46 @@ Các cell LVT cho tốc độ chuyển mạch nhanh hơn nhờ điện áp ngư�
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|c|}
 \hline
-
+ 
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-
+ 
 & \multicolumn{2}{c|}{\textbf{Delay Parameter A$\rightarrow$Y}}
 & \multicolumn{2}{c|}{\textbf{Delay Parameter B$\rightarrow$Y}} \\
-
+ 
 \cline{4-7}
-
+ 
 & & 
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)}
 & \textbf{Rising Delay (ns)} 
 & \textbf{Falling Delay (ns)} \\
-
+ 
 \hline
-
+ 
 % ----------- KHỐI LVT ----------------
-
+ 
 fast\_vdd1v0\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.44019e-08 
+& 0.007 & 0.005
+& 0.005 & 0.003 \\ \hline
+ 
 fast\_vdd1v2\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 2.03360e-08 
+& 0.006 & 0.004
+& 0.004 & 0.003 \\ \hline
+ 
 slow\_vdd1v0\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 7.82275e-09 
+& 0.020 & 0.014
+& 0.013 & 0.008 \\ \hline
+ 
 slow\_vdd1v2\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... \\ \hline
-
+& 1.026 & 1.13492e-08 
+& 0.013 & 0.010
+& 0.008 & 0.006 \\ \hline
+ 
 \end{tabular}
 }
 
@@ -1272,50 +1272,50 @@ Nhóm tiếp tục thực hiện khảo sát đặc tính của cổng MUX trên
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
 \hline
-
+ 
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-
+ 
 & \multicolumn{2}{c|}{\textbf{Delay D0$\rightarrow$Y}}
 & \multicolumn{2}{c|}{\textbf{Delay D1$\rightarrow$Y}} 
 & \multicolumn{2}{c|}{\textbf{Delay S$\rightarrow$Y}} \\
-
+ 
 \cline{4-9}
-
+ 
 & & 
 & \textbf{Rise (ns)} & \textbf{Fall (ns)}
 & \textbf{Rise (ns)} & \textbf{Fall (ns)}
 & \textbf{Rise (ns)} & \textbf{Fall (ns)} \\
-
+ 
 \hline
-
+ 
 % ----------- KHỐI HVT ----------------
-
+ 
 fast\_vdd1v0\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 3.65866e-08 
+& 0.034 & 0.036
+& 0.034 & 0.037 
+& 0.038 & 0.040 \\ \hline
+ 
 fast\_vdd1v2\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 5.47016e-08 
+& 0.024 & 0.027
+& 0.024 & 0.027 
+& 0.027 & 0.029 \\ \hline
+ 
 slow\_vdd1v0\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 2.39599e-08 
+& 0.203 & 0.126
+& 0.202 & 0.130 
+& 0.199 & 0.152 \\ \hline
+ 
 slow\_vdd1v2\_basicCells\_hvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 3.62320e-08 
+& 0.088 & 0.064
+& 0.087 & 0.065 
+& 0.089 & 0.074 \\ \hline
+ 
 \end{tabular}
 }
 
@@ -1380,50 +1380,50 @@ Các cell LVT cho tốc độ chuyển mạch nhanh hơn nhờ điện áp ngư�
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
 \hline
-
+ 
 \multirow{2}{*}{\textbf{Library Name}} 
 & \multirow{2}{*}{\textbf{Total Area}} 
 & \multirow{2}{*}{\textbf{Total Power}} 
-
+ 
 & \multicolumn{2}{c|}{\textbf{Delay D0$\rightarrow$Y}}
 & \multicolumn{2}{c|}{\textbf{Delay D1$\rightarrow$Y}} 
 & \multicolumn{2}{c|}{\textbf{Delay S$\rightarrow$Y}} \\
-
+ 
 \cline{4-9}
-
+ 
 & & 
 & \textbf{Rise (ns)} & \textbf{Fall (ns)}
 & \textbf{Rise (ns)} & \textbf{Fall (ns)}
 & \textbf{Rise (ns)} & \textbf{Fall (ns)} \\
-
+ 
 \hline
-
+ 
 % ----------- KHỐI LVT ----------------
-
+ 
 fast\_vdd1v0\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 4.61418e-08 
+& 0.020 & 0.022
+& 0.019 & 0.022 
+& 0.022 & 0.023 \\ \hline
+ 
 fast\_vdd1v2\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 6.48883e-08 
+& 0.015 & 0.018
+& 0.015 & 0.018 
+& 0.017 & 0.019 \\ \hline
+ 
 slow\_vdd1v0\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 2.71963e-08 
+& 0.077 & 0.066
+& 0.076 & 0.068 
+& 0.080 & 0.073 \\ \hline
+ 
 slow\_vdd1v2\_basicCells\_lvt 
-& ... & ... 
-& ... & ...
-& ... & ... 
-& ... & ... \\ \hline
-
+& 2.394 & 4.05591e-08 
+& 0.048 & 0.044
+& 0.048 & 0.045 
+& 0.051 & 0.049 \\ \hline
+ 
 \end{tabular}
 }
 
@@ -1580,13 +1580,13 @@ Do kiến trúc bên trong của Full Adder bao gồm nhiều cổng logic đa t
 & \textbf{Rise} & \textbf{Fall} \\
 \hline
 fast\_vdd1v0\_basicCells\_hvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 8.72063e-08 & 0.044 & 0.051 & 0.048 & 0.053 & 0.048 & 0.054 & 0.075 & 0.077 & 0.080 & 0.081 & 0.083 & 0.080 \\ \hline
 fast\_vdd1v2\_basicCells\_hvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 1.35372e-07 & 0.031 & 0.036 & 0.034 & 0.039 & 0.034 & 0.038 & 0.054 & 0.054 & 0.058 & 0.057 & 0.059 & 0.056 \\ \hline
 slow\_vdd1v0\_basicCells\_hvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 5.36985e-08 & 0.267 & 0.173 & 0.288 & 0.174 & 0.282 & 0.176 & 0.383 & 0.362 & 0.418 & 0.400 & 0.403 & 0.389 \\ \hline
 slow\_vdd1v2\_basicCells\_hvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 8.40672e-08 & 0.112 & 0.086 & 0.124 & 0.089 & 0.121 & 0.089 & 0.160 & 0.163 & 0.175 & 0.181 & 0.176 & 0.176 \\ \hline
 \end{tabular}
 }
 \caption{Tổng hợp thông số Area, Power và Delay 6 đường dẫn của Full Adder (HVT).}
@@ -1670,13 +1670,13 @@ Các cell LVT cung cấp tốc độ chuyển mạch cực nhanh nhờ giảm th
 & \textbf{Rise} & \textbf{Fall} \\
 \hline
 fast\_vdd1v0\_basicCells\_lvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 1.13149e-07 & 0.026 & 0.030 & 0.027 & 0.032 & 0.028 & 0.031 & 0.047 & 0.044 & 0.047 & 0.047 & 0.048 & 0.046 \\ \hline
 fast\_vdd1v2\_basicCells\_lvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 1.64422e-07 & 0.020 & 0.024 & 0.022 & 0.026 & 0.022 & 0.025 & 0.038 & 0.036 & 0.038 & 0.037 & 0.038 & 0.037 \\ \hline
 slow\_vdd1v0\_basicCells\_lvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 6.44167e-08 & 0.100 & 0.092 & 0.109 & 0.094 & 0.108 & 0.094 & 0.166 & 0.154 & 0.163 & 0.171 & 0.170 & 0.168 \\ \hline
 slow\_vdd1v2\_basicCells\_lvt 
-& ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\ \hline
+& 5.130 & 9.90057e-08 & 0.062 & 0.059 & 0.068 & 0.062 & 0.068 & 0.061 & 0.106 & 0.097 & 0.104 & 0.107 & 0.108 & 0.106 \\ \hline
 \end{tabular}
 }
 \caption{Tổng hợp thông số Area, Power và Delay 6 đường dẫn của Full Adder (LVT).}
@@ -1740,14 +1740,14 @@ Bảng dưới đây thống kê diện tích của 6 standard cells bao gồm N
         \hline
         \textbf{Process Corner (VDD, Vth)} & \textbf{NOT} & \textbf{OR2} & \textbf{NAND2} & \textbf{NOR2} & \textbf{MUX} & \textbf{FA} \\
         \hline
-        Fast (FF), 1.0V, HVT & & & & & & \\ \hline
-        Fast (FF), 1.2V, HVT & & & & & & \\ \hline
-        Slow (SS), 1.0V, HVT & & & & & & \\ \hline
-        Slow (SS), 1.2V, HVT & & & & & & \\ \hline
-        Fast (FF), 1.0V, LVT & & & & & & \\ \hline
-        Fast (FF), 1.2V, LVT & & & & & & \\ \hline
-        Slow (SS), 1.0V, LVT & & & & & & \\ \hline
-        Slow (SS), 1.2V, LVT & & & & & & \\ \hline
+        Fast (FF), 1.0V, HVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Fast (FF), 1.2V, HVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Slow (SS), 1.0V, HVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Slow (SS), 1.2V, HVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Fast (FF), 1.0V, LVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Fast (FF), 1.2V, LVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Slow (SS), 1.0V, LVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
+        Slow (SS), 1.2V, LVT & 0.684 & 1.368 & 1.026 & 1.026 & 2.394 & 5.130 \\ \hline
     \end{tabular}
     \caption{Area parameters ($\mu m^2$) của các cells qua 8 corners}
     \label{tab:exp1_area}
@@ -1760,22 +1760,25 @@ Bảng dưới đây thống kê công suất tổng của các cells qua 8 proc
 
 \begin{table}[H]
     \centering
+    \resizebox{\textwidth}{!}{
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
         \textbf{Process Corner (VDD, Vth)} & \textbf{NOT} & \textbf{OR2} & \textbf{NAND2} & \textbf{NOR2} & \textbf{MUX} & \textbf{FA} \\
         \hline
-        Fast (FF), 1.0V, HVT & & & & & & \\ \hline
-        Fast (FF), 1.2V, HVT & & & & & & \\ \hline
-        Slow (SS), 1.0V, HVT & & & & & & \\ \hline
-        Slow (SS), 1.2V, HVT & & & & & & \\ \hline
-        Fast (FF), 1.0V, LVT & & & & & & \\ \hline
-        Fast (FF), 1.2V, LVT & & & & & & \\ \hline
-        Slow (SS), 1.0V, LVT & & & & & & \\ \hline
-        Slow (SS), 1.2V, LVT & & & & & & \\ \hline
+        Fast (FF), 1.0V, HVT & 5.9274e-09 & 1.73733e-08 & 1.05962e-08 & 1.07544e-08 & 3.65866e-08 & 8.72063e-08 \\ \hline
+        Fast (FF), 1.2V, HVT & 8.6130e-09  & 2.53194e-08 & 1.54143e-08 & 1.56633e-08 & 5.47016e-08 & 1.35372e-07 \\ \hline
+        Slow (SS), 1.0V, HVT & 3.9947e-09  & 1.14746e-08 & 7.20719e-09 & 7.30888e-09 & 2.39599e-08 & 5.36985e-08 \\ \hline
+        Slow (SS), 1.2V, HVT & 5.8211e-09  & 1.68838e-08 & 1.04670e-08 & 1.06519e-08 & 3.62320e-08 & 8.40672e-08 \\ \hline
+        Fast (FF), 1.0V, LVT & 7.8029e-09  & 2.23841e-08 & 1.42490e-08 & 1.44019e-08 & 4.61418e-08 & 1.13149e-07 \\ \hline
+        Fast (FF), 1.2V, LVT & 1.1353e-08  & 3.34466e-08 & 2.00986e-08 & 2.03360e-08 & 6.48883e-08 & 1.64422e-07 \\ \hline
+        Slow (SS), 1.0V, LVT & 5.4851e-09  & 1.26400e-08 & 7.73734e-09 & 7.82275e-09 & 2.71963e-08 & 6.44167e-08 \\ \hline
+        Slow (SS), 1.2V, LVT & 7.9701e-09  & 1.84242e-08 & 1.11834e-08 & 1.13492e-08 & 4.05591e-08 & 9.90057e-08 \\ \hline
     \end{tabular}
+    }
     \caption{Total Power parameters của các cells qua 8 corners}
     \label{tab:exp1_power}
 \end{table}
+
 
 %--------------------------------------------------
 \subsection{Delay parameters}
@@ -1784,34 +1787,24 @@ Bảng dưới đây thống kê công suất tổng của các cells qua 8 proc
 
 \begin{table}[H]
     \centering
+    \resizebox{\textwidth}{!}{
     \begin{tabular}{|l|c|c|c|c|c|c|}
         \hline
         \textbf{Process Corner (VDD, Vth)} & \textbf{NOT} & \textbf{OR2} & \textbf{NAND2} & \textbf{NOR2} & \textbf{MUX} & \textbf{FA} \\
         \hline
-        Fast (FF), 1.0V, HVT & & & & & & \\ \hline
-        Fast (FF), 1.2V, HVT & & & & & & \\ \hline
-        Slow (SS), 1.0V, HVT & & & & & & \\ \hline
-        Slow (SS), 1.2V, HVT & & & & & & \\ \hline
-        Fast (FF), 1.0V, LVT & & & & & & \\ \hline
-        Fast (FF), 1.2V, LVT & & & & & & \\ \hline
-        Slow (SS), 1.0V, LVT & & & & & & \\ \hline
-        Slow (SS), 1.2V, LVT & & & & & & \\ \hline
+        Fast (FF), 1.0V, HVT & 0.004/0.004 & 0.017/0.029 & 0.007/0.011 & 0.011/0.007 & 0.034/0.036 & 0.044/0.051 \\ \hline
+        Fast (FF), 1.2V, HVT & 0.003/0.003 & 0.013/0.021 & 0.006/0.008 & 0.009/0.006 & 0.024/0.027 & 0.031/0.036 \\ \hline
+        Slow (SS), 1.0V, HVT & 0.009/0.015 & 0.077/0.099 & 0.017/0.066 & 0.036/0.030 & 0.203/0.126 & 0.267/0.173 \\ \hline
+        Slow (SS), 1.2V, HVT & 0.006/0.008 & 0.037/0.050 & 0.010/0.029 & 0.019/0.016 & 0.088/0.064 & 0.112/0.086 \\ \hline
+        Fast (FF), 1.0V, LVT & 0.003/0.003 & 0.011/0.017 & 0.005/0.006 & 0.007/0.005 & 0.020/0.022 & 0.026/0.030 \\ \hline
+        Fast (FF), 1.2V, LVT & 0.002/0.002 & 0.009/0.014 & 0.004/0.005 & 0.006/0.004 & 0.015/0.018 & 0.020/0.024 \\ \hline
+        Slow (SS), 1.0V, LVT & 0.007/0.012 & 0.033/0.052 & 0.010/0.024 & 0.020/0.014 & 0.077/0.066 & 0.100/0.092 \\ \hline
+        Slow (SS), 1.2V, LVT & 0.005/0.007 & 0.022/0.034 & 0.008/0.015 & 0.013/0.010 & 0.048/0.044 & 0.062/0.059 \\ \hline
     \end{tabular}
-    \caption{Delay parameters (Rising/Falling) của các cells qua 8 corners}
+    }
+    \caption{Delay parameters ($t_{pLH}/t_{pHL}$, ns) của các cells qua 8 corners}
     \label{tab:exp1_delay}
 \end{table}
-
-Để minh chứng cho kết quả đo đạc độ trễ, dưới đây là các waveform mô phỏng được trích xuất từ Xcelium:
-
-\begin{figure}[H]
-    \centering
-    % Lần lượt chèn 6 ảnh waveform cho 6 cells. Có thể dùng subfigure nếu muốn xếp cạnh nhau.
-    %\includegraphics[width=0.45\textwidth]{figures/not_waveform.png}
-    %\includegraphics[width=0.45\textwidth]{figures/or2_waveform.png}
-    % ...
-    \caption{Waveform minh chứng đo đạc Delay cho các cells (NOT, OR2, NAND2, NOR2, MUX, FA)}
-    \label{fig:exp1_waveforms}
-\end{figure}
 
 %---------------------------------------------------------
 \newpage
@@ -1903,24 +1896,20 @@ thông số vật lý của cell, không phụ thuộc vào điều kiện PVT; 
 
 Bảng dưới đây thống kê công suất của D-FF qua 8 process corners.
 
-% LƯU Ý CHO NGƯỜI DÙNG: Cột "Leakage Power" và "Dynamic Power" chưa có số liệu
-% riêng lẻ từ file báo cáo. Sau khi có file power.rpt từ Genus, tra cứu hai dòng
-% tương ứng rồi thay thế ký hiệu "\ldots" bằng giá trị thực.
-
 \begin{table}[H]
     \centering
-    \begin{tabular}{|l|c|c|c|}
+    \begin{tabular}{|l|c|}
         \hline
-        \textbf{Library Name} & \textbf{Leakage Power (W)} & \textbf{Dynamic Power (W)} & \textbf{Total Power (W)} \\
+        \textbf{Library Name} & \textbf{Total Power} \\
         \hline
-        fast\_vdd1v0\_basicCells\_hvt & \ldots & \ldots & $5.727\times10^{-8}$ \\ \hline
-        fast\_vdd1v2\_basicCells\_hvt & \ldots & \ldots & $8.441\times10^{-8}$ \\ \hline
-        slow\_vdd1v0\_basicCells\_hvt & \ldots & \ldots & $4.932\times10^{-8}$ \\ \hline
-        slow\_vdd1v2\_basicCells\_hvt & \ldots & \ldots & $7.492\times10^{-8}$ \\ \hline
-        fast\_vdd1v0\_basicCells\_lvt & \ldots & \ldots & $7.235\times10^{-8}$ \\ \hline
-        fast\_vdd1v2\_basicCells\_lvt & \ldots & \ldots & $1.047\times10^{-7}$ \\ \hline
-        slow\_vdd1v0\_basicCells\_lvt & \ldots & \ldots & $5.757\times10^{-8}$ \\ \hline
-        slow\_vdd1v2\_basicCells\_lvt & \ldots & \ldots & $8.605\times10^{-8}$ \\ \hline
+        fast\_vdd1v0\_basicCells\_hvt & 5.72696e-08   \\ \hline
+        fast\_vdd1v2\_basicCells\_hvt & 8.44054e-08   \\ \hline
+        slow\_vdd1v0\_basicCells\_hvt & 4.93175e-08   \\ \hline
+        slow\_vdd1v2\_basicCells\_hvt & 7.49199e-08   \\ \hline
+        fast\_vdd1v0\_basicCells\_lvt & 7.23510e-08   \\ \hline
+        fast\_vdd1v2\_basicCells\_lvt & 1.04679e-07   \\ \hline
+        slow\_vdd1v0\_basicCells\_lvt & 5.75687e-08   \\ \hline
+        slow\_vdd1v2\_basicCells\_lvt & 8.60509e-08   \\ \hline
     \end{tabular}
     \caption{Power parameters of D-FF across 8 process corners}
     \label{tab:exp2_power}
