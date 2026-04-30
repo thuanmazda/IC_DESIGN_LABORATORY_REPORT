@@ -1,25 +1,38 @@
-# EE3165 - Digital Design Verification: Lab 1
+# EE3165 - IC Design Laboratory
+**Lab 3: Synthesis and Static Timing Analysis (STA)**
 
-This repository contains the RTL designs and testbenches for **Lab 1: Hardware Description and Digital Design Verification** as part of the IC Design course at Ho Chi Minh City University of Technology (HCMUT).
+[![Institution](https://img.shields.io/badge/Institution-HCMUT-blue.svg)](https://hcmut.edu.vn/)
+[![Course](https://img.shields.io/badge/Course-EE3165-orange.svg)]()
+[![Status](https://img.shields.io/badge/Status-Completed-success.svg)]()
 
-## Project Overview
-The project covers fundamental digital circuit designs using **SystemVerilog**, transitioning from combinational logic to complex sequential finite state machines (FSM). It includes both structural (logic-expression) and behavioral modeling styles.
+Repository này lưu trữ mã nguồn, kịch bản tổng hợp (scripts) và các báo cáo kết quả của bài Lab 3 môn Thiết kế vi mạch (IC Design). Trọng tâm của bài thực hành là thực hiện quy trình tổng hợp mạch số (Synthesis) và Phân tích thời gian tĩnh (Static Timing Analysis - STA) sử dụng bộ công cụ Cadence.
 
-### Experiments Included:
-1. **Combinational Circuits**: 8-bit Ripple-Carry Adder/Subtractor with Overflow and Carry-out detection.
-2. **Sequential Circuits**: Accumulator designs (evaluating latency and pipelining trade-offs using Input/Output registers).
-3. **FSM Implementation (Logic-Expression)**: Sequence detector FSM (detects four consecutive `0`s or `1`s with overlapping) using Boolean logic equations for both **Binary** and **One-hot** encodings.
-4. **FSM Implementation (Behavioral)**: Sequence detector FSM re-implemented using behavioral `always_comb` and `case` statements with asynchronous resets.
+## 👥 Nhóm thực hiện (Group 5 - L03)
+**Giảng viên hướng dẫn:** ThS. Nguyễn Trung Hiếu
 
-## Repository Structure
-* `00_src/` : SystemVerilog RTL design files.
-* `01_tb/`  : SystemVerilog Testbench files for simulation.
-* `docs/`   : Detailed lab report (PDF) and waveform simulation screenshots.
+| STT | Họ và tên | MSSV | Tỉ lệ hoàn thành |
+| :---: | :--- | :--- | :---: |
+| 1 | Vũ Nhật Huy | 2311267 | 100% |
+| 2 | Nguyễn Minh Thuận | 2313355 | 100% |
+| 3 | Thái Đức Thiên | 2313222 | 100% |
 
-## Tools Used
-* **HDL:** SystemVerilog
-* **Simulation:** Cadence Xcelium / SimVision
-* **Editor:** VS Code / Vim
+---
 
-## Verification
-All designs have been verified using self-checking testbenches or waveform analysis. Refer to the `docs/` folder for timing diagrams demonstrating proper circuit behavior (including corner cases like asynchronous resets, sequence overlapping, and signed overflows).
+## 🎯 Mục tiêu bài Lab
+1. Nắm vững luồng thiết kế số: **RTL Design $\rightarrow$ Synthesis $\rightarrow$ Gate-level Simulation**.
+2. Vận dụng thành thạo công cụ **Cadence Genus** để tổng hợp mã RTL thành Gate-level Netlist và trích xuất file SDF (Standard Delay Format).
+3. Sử dụng các tập lệnh **Tcl** và thiết lập tệp ràng buộc **SDC (Synopsys Design Constraints)** để chỉ định các tham số thời gian, công suất và diện tích.
+4. Thực hiện Static Timing Analysis (STA) để đánh giá và kiểm chứng các đường truyền tới hạn (Worst paths) cho cả mạch tổ hợp (Combinational) và mạch tuần tự (Sequential) dưới các điều kiện quy trình (Process Corners) khác nhau ở công nghệ 45nm.
+
+---
+
+## 📁 Cấu trúc thư mục (Repository Structure)
+```text
+EE3165_Lab3_STA/
+├── 01_rtl/                 # Mã nguồn SystemVerilog (ALU tổ hợp, ALU tuần tự) và Testbench
+├── 02_reports/             # Các file báo cáo trích xuất từ Genus (timing.rpt, area.rpt, power.rpt,...)
+├── 03_outputs/             # Netlist mức cổng (*_netlist.sv) và file delay (.sdf) sau tổng hợp
+├── scripts/                # File kịch bản Tcl (run_synthesis.tcl) và ràng buộc thời gian (constraints.sdc)
+├── figure/                 # Hình ảnh sơ đồ mạch (Schematic) và dạng sóng minh họa
+├── report/                 # File PDF báo cáo hoàn chỉnh của nhóm
+└── README.md               # Tài liệu mô tả dự án
