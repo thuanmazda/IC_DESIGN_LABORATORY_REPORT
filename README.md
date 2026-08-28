@@ -1,36 +1,37 @@
-# EE3165 - Digital Design Verification: Lab 4: MOS Transistor Characterization
+# EE3165 - Digital Design Verification: Lab 5: Circuit Design for Basic Standard Cells
 
-This repository contains the simulation setups, extracted data, and analysis for **Lab 4: MOS Transistor Characterization**, as part of the IC Design course at Ho Chi Minh City University of Technology (HCMUT).
+This repository contains the circuit designs, simulation setups, and analysis data for **Lab 5: Circuit Design for Basic Standard Cells**, as part of the IC Design course at Ho Chi Minh City University of Technology (HCMUT).
 
-Details on the theoretical background, testbench setups, result data, and in-depth analysis can be found in the detailed report: **Bao_Cao_Lab4_TKVM.pdf**.
+Details on the theoretical background, testbench setups, result data, and in-depth analysis can be found in the detailed report: **Bao_Cao_Lab5_TKVM.pdf**.
 
 ## 📖 Objectives
-- Understand the operation regions of MOSFETs (Cut-off, Triode, Saturation) through the analysis of $I_D - V_{GS}$ and $I_D - V_{DS}$ characteristics.
-- Characterize `nmos1v_lvt` and `pmos1v_lvt` devices using the **gpdk045** (45nm) technology library.
-- Quantitatively analyze second-order effects: 
-  - Body Effect.
-  - Channel Length Modulation (CLM).
-- Investigate the characteristics and behavior of Stacked and Parallel transistor configurations.
+- Perform schematic design and create symbols for basic standard logic gates using the **gpdk045** (45nm) technology.
+- Perform DC Analysis to determine logic levels, Noise Margins, and the switching voltage $V_M$.
+- Perform Transient Analysis to measure propagation delay ($t_{pd}$), rise/fall times ($t_{rise}$, $t_{fall}$), and power consumption (static/dynamic).
+- Conduct an in-depth performance comparison between different circuit architectures (Static CMOS vs. Transmission Gate).
 
 ## 🧪 Experiments
-### 1. MOSFET Characteristics without Body Effect (Experiment 1)
-- Build testbenches to sweep parameters such as $V_{DS}$, $V_{SD}$, $V_{GS}$, and channel width $W$.
-- Extract and determine the threshold voltage $V_{TH}$ and linear/saturation operation parameters for NMOS and PMOS.
+### 1. NOT Logic Gate (Experiment 1)
+- Design a basic Inverter circuit and sweep the VTC (Voltage Transfer Characteristic).
+- Perform static and dynamic analysis, and adjust the PMOS sizing to compensate for low carrier mobility, achieving the ideal switching point $V_M = V_{DD}/2$.
 
-### 2. Body Effect (Experiment 2)
-- Analyze the variation of the threshold voltage $V_{TH}$ with the potential difference $V_{SB}$ (for NMOS) and $V_{BS}$ (for PMOS).
-- Sweep $V_{SB}$/$V_{BS}$ parameters, combined with $V_{DS}$/$V_{SD}$ and channel width $W$ sweeps, to evaluate the degradation of saturation current amplitude.
-- Discuss the impossibility of completely eliminating the Body Effect in stacked NMOS structures due to the shared grounded P-Substrate.
+### 2. NAND and NOR Logic Gates (Experiment 2)
+- Design 2-input NAND and NOR gates.
+- Investigate DC characteristics for different input sweep cases to observe the $V_M$ voltage shift caused by the Body effect and Stacking effect.
+- Optimize transistor widths (W) to balance the switching point.
 
-### 3. Channel Length Modulation - CLM (Experiment 3)
-- Investigate the variation of drain current $I_D$ with large changes in $V_{DS}$/$V_{SD}$ in the saturation region to identify device non-idealities.
-- Analyze the impact of varying channel length $L$ (from 45nm to 450nm) on output resistance ($r_o$) and saturation current slope (applicable for Current Mirror optimization).
-- Examine, compare, and contrast the current characteristics of Stacked and Parallel transistor branches with equivalent single transistors.
+### 3. XOR and XNOR Logic Gates (Experiment 3)
+- Implement an XOR gate and develop it into an XNOR gate.
+- Compare and evaluate the fundamental differences between a simple logic gate (like NOR) and a complex gate (XNOR) in terms of: transistor count, internal parasitic capacitance, VTC complexity, propagation delay, and static/dynamic power consumption.
+
+### 4. Multiplexer (MUX) Design (Experiment 4)
+- Investigate and compare two Inverting MUX topologies.
+- Evaluate the pros and cons of the **Static CMOS** architecture versus the **Transmission Gate (TG)** architecture.
+- Conduct an in-depth analysis of the physical area footprint, timing characteristics, power efficiency, and driving capability/logic level restoration for each architecture.
 
 ## 🛠 Tools & Technologies
-- **Design Environment:** Cadence Virtuoso (running on the doelab.site server).
-- **Technology Library:** bBulk gpdk045 (45nm process).
-- **Analysis:** Static simulation (DC Sweep) and parameter analysis of voltage, current, output resistance, etc.
+- **Design Environment:** Cadence Virtuoso (using Testbenches, DC/Transient Sweeps, and the Calculator tool for measurements).
+- **Technology Library:** gpdk045 (45nm process).
 
 ## 📄 Documentation
-- Please refer to the attached `Bao_Cao_Lab4_TKVM.pdf` file in this repository for comprehensive data tables, simulation schematics, and related characteristic charts.
+- Please refer to the attached `Bao_Cao_Lab5_TKVM.pdf` file in this directory for complete data tables, circuit schematics, and detailed timing diagrams.
