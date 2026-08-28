@@ -8,6 +8,12 @@
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{indentfirst,enumitem}
 \usepackage{graphicx}
+\let\originalincludegraphics\includegraphics
+\renewcommand{\includegraphics}[2][]{%
+    \IfFileExists{#2}{\originalincludegraphics[#1]{#2}}{%
+        \fbox{\parbox[c][3cm][c]{0.8\linewidth}{\centering Missing image: \texttt{\detokenize{#2}}}}%
+    }%
+}
 \usepackage{multicol}
 \usepackage{multirow}
 \usepackage{setspace}
@@ -20,7 +26,7 @@
 \usepackage{comment}
 \usepackage{soul}
 \usepackage{tipa}
-\usepackage{subcaption}
+\usepackage{subfigure}
 \usepackage{caption}
 \usepackage{booktabs}
 \usepackage{array}
@@ -144,7 +150,7 @@
 \end{center}
 \begin{center}
     \fontsize{15pt}{17pt}\selectfont 
-    \textbf{\textrm{LAB 4: MOS TRANSISTOR CHARACTERIZATION}}
+    \textbf{\textrm{LAB 5: Circuit Design for Basic Standard Cells }}
 \end{center}
 
 \begin{center}
@@ -175,471 +181,767 @@
 \tableofcontents
 \newpage
 
-\section{Mục tiêu thí nghiệm (Objectives)}
-\begin{itemize}
-    \item Hiểu rõ tất cả các vùng hoạt động của MOSFET thông qua việc phân tích các đặc tuyến $I_D-V_{GS}$ và $I_D-V_{DS}$ của các transistor \texttt{nmos1v\_lvt} và \texttt{pmos1v\_lvt} trong công nghệ \texttt{gpdk045}.
-    \item Làm rõ các hiệu ứng bậc hai (Second-order effects): Hiệu ứng thân (Body effect) và Hiệu ứng điều chế chiều dài kênh (Channel length modulation).
-    \item Khảo sát đặc tuyến truyền đạt điện áp (VTC) của cổng đảo CMOS.
-\end{itemize}
+% =================================================================
+% EXPERIMENT 1: CMOS INVERTER
+% =================================================================
+\section{Experiment 1: Circuit Design for a CMOS NOT Logic Gate}
 
-\section{Chuẩn bị thí nghiệm (Preparation for Lab 4)}
-Trong phần này, nhóm ôn tập về các vùng hoạt động của MOSFET (Cut-off, Triode, Saturation) với các điều kiện điện áp dòng tương ứng.
-
-\subsection{NMOS Transistor}
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{Parameter} & \textbf{Cut-off} & \textbf{Triode} & \textbf{Saturation} \\ \hline
-        $I_D$ & $0$ & $\mu_n C_{ox} \frac{W}{L} \left[ (V_{GS}-V_{THN})V_{DS} - \frac{V_{DS}^2}{2} \right]$ & $\frac{1}{2} \mu_n C_{ox} \frac{W}{L} (V_{GS}-V_{THN})^2 (1 + \lambda V_{DS})$ \\ \hline
-        $V_{GS}$ & $V_{GS} < V_{THN}$ & $V_{GS} \ge V_{THN}$ & $V_{GS} \ge V_{THN}$ \\ \hline
-        $V_{DS}$ & $-$ & $V_{DS} < V_{GS} - V_{THN}$ & $V_{DS} \ge V_{GS} - V_{THN}$ \\ \hline
-    \end{tabular}
-    \caption{Các điều kiện hoạt động của transistor NMOS}
-\end{table}
-
-\subsection{PMOS Transistor}
-\begin{table}[H]
-    \centering
-    \renewcommand{\arraystretch}{1.5}
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{Parameter} & \textbf{Cut-off} & \textbf{Triode} & \textbf{Saturation} \\ \hline
-        $I_D$ & $0$ & $\mu_p C_{ox} \frac{W}{L} \left[ (V_{SG}-|V_{THP}|)V_{SD} - \frac{V_{SD}^2}{2} \right]$ & $\frac{1}{2} \mu_p C_{ox} \frac{W}{L} (V_{SG}-|V_{THP}|)^2 (1 + \lambda V_{SD})$ \\ \hline
-        $V_{SG}$ & $V_{SG} < |V_{THP}|$ & $V_{SG} \ge |V_{THP}|$ & $V_{SG} \ge |V_{THP}|$ \\ \hline
-        $V_{SD}$ & $-$ & $V_{SD} < V_{SG} - |V_{THP}|$ & $V_{SD} \ge V_{SG} - |V_{THP}|$ \\ \hline
-    \end{tabular}
-    \caption{Các điều kiện hoạt động của transistor PMOS}
-\end{table}
-
-\newpage
-\section{Experiment 1: Đặc tuyến MOSFET khi không có hiệu ứng Body}
 \subsection{Mục tiêu}
-Xây dựng test bench để phân tích đặc tuyến của NMOS và PMOS, tìm hiểu hành vi của transistor khi thay đổi điện áp $V_{GS}$ trong điều kiện $V_{SB} = 0$.
+Thực hiện thiết kế nguyên lý (Schematic), tạo biểu tượng (Symbol) và mô phỏng (DC, Transient) cho cổng NOT sử dụng công nghệ GPDK045.
 
-\subsection{Khảo sát linh kiện NMOS}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{figures/Lab4 Fig/exp1_nmos_tb.png}
-    \caption{Sơ đồ Testbench khảo sát transistor NMOS}
-\end{figure}
-
-\subsubsection{Trường hợp quét $V_{DS}$}
-\textbf{Thiết lập:} Quét $V_{GS} \in [0, 1]\text{ V}$ (step 1 mV). Quét tham số $V_{DS} \in [0, 1]\text{ V}$ (step 100 mV).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_nmos_vds_graph.png}
-    \caption{Đặc tuyến $I_D - V_{GS}$ của NMOS khi quét $V_{DS}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_nmos_vds_zoom.png}
-    \caption{Đặc tuyến $I_D - V_{GS}$ (phóng to) tại điểm $V_{TH}$ ứng với các mức $V_{DS}$}
-\end{figure}
-
-\textbf{Trích xuất số liệu từ mô phỏng (Tables):}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{figures/Lab4 Fig/exp1_nmos_vds_tab1.png} \hspace{0.5cm}
-    \includegraphics[width=0.3\textwidth]{figures/Lab4 Fig/exp1_nmos_vds_tab3.png}
-    \caption{Bảng thông số dòng $I_D$ và điện áp $V_{GT}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/Lab4 Fig/exp1_nmos_vds_tab2.png}
-    \caption{Bảng thông số chi tiết (gds, gm, vdsat, vth...) của NMOS quét $V_{DS}$}
-\end{figure}
-
-\textbf{Nhận xét NMOS (Quét $V_{DS}$):}
+\subsection{Bảng trạng thái và Nguyên lý hoạt động}
 \begin{itemize}
-    \item \textbf{Ước lượng $V_{TH}$:} Từ bảng thông số và đồ thị phóng to, ta thấy $V_{THN} \approx 487 \text{ mV} - 511 \text{ mV}$ tùy thuộc vào mức $V_{DS}$ (có sự sụt giảm nhẹ $V_{TH}$ khi $V_{DS}$ tăng do Drain Induced Barrier Lowering - DIBL).
-    \item \textbf{Vùng hoạt động:} Chỉ có 2 vùng hoạt động rõ rệt trên đồ thị này. Khi $V_{GS} < V_{TH}$, linh kiện ở vùng \textbf{Cut-off} ($I_D \approx 0$). Khi $V_{GS} > V_{TH}$, kênh dẫn hình thành, linh kiện đi vào vùng \textbf{Saturation} (dòng $I_D$ tăng mạnh theo hàm mũ/bậc hai).
+    \item \textbf{Bảng chân trị (Truth Table):}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+        \hline
+        Input (IN) & Output (OUT) \\ \hline
+        0 & 1 \\ \hline
+        1 & 0 \\ \hline
+        \end{tabular}
+    \end{center}
+    \item \textbf{Nguyên lý hoạt động:} Mô tả vùng hoạt động của NMOS và PMOS khi ngõ vào ở mức Logic 0 (PMOS dẫn - vùng tuyến tính, NMOS ngắt) và Logic 1 (NMOS dẫn, PMOS ngắt).
 \end{itemize}
 
-\subsubsection{Trường hợp quét $W$}
-\textbf{Thiết lập:} Quét $V_{GS} \in [0, 1]\text{ V}$ (step 1 mV). Quét tham số $W \in [250\text{ nm}, 1\,\mu\text{m}]$ (step 250 nm).
+\subsection{Thiết kế Schematic và Symbol}
+\textbf{Sizing:} NMOS ($W/L = 120n/45n$, Finger=2), PMOS ($W/L = 120n/45n$, Finger=2).
+
+% Chèn hình Schematic và Symbol của INV
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_nmos_w_graph.png}
-    \caption{Đặc tuyến $I_D - V_{GS}$ của NMOS khi quét $W$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_nmos_w_zoom.png}
-    \caption{Đặc tuyến phóng to tại $V_{TH}$ ứng với các mức $W$ khác nhau}
+    \subfigure[Schematic của Inverter]{\includegraphics[width=0.45\textwidth]{inv_schematic.png}}
+    \subfigure[Symbol của Inverter]{\includegraphics[width=0.45\textwidth]{inv_symbol.png}}
+    \caption{Thiết kế nguyên lý cổng Inverter}
 \end{figure}
 
-\textbf{Trích xuất số liệu từ mô phỏng (Tables):}
+\subsection{Mô phỏng DC Analysis}
+\textbf{Thiết lập Testbench:} Sử dụng nguồn ramp từ 0V đến 1V.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{figures/Lab4 Fig/exp1_nmos_w_tab1.png}
-    \caption{Bảng thông số chi tiết (gds, gm, vdsat, vth...) của NMOS quét $W$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{figures/Lab4 Fig/exp1_nmos_w_tab2.png} \hspace{0.5cm}
-    \includegraphics[width=0.3\textwidth]{figures/Lab4 Fig/exp1_nmos_w_tab3.png}
-    \caption{Bảng thông số dòng $I_D$, và điện áp $V_{GT}$ khi quét $W$}
+    \includegraphics[width=0.7\textwidth]{inv_dc_testbench.png}
+    \caption{Testbench mô phỏng DC cổng Inverter}
 \end{figure}
 
-\textbf{Nhận xét NMOS (Quét $W$):}
+\textbf{Kết quả mô phỏng VTC (Voltage Transfer Characteristics):}
+% Chèn hình đặc tuyến VTC và cách tìm VIH, VIL, VOH, VOL, VM từ slide
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{inv_dc_response.png}
+    \caption{Đặc tuyến chuyển tiếp điện áp VTC của cổng Inverter}
+\end{figure}
+
+\textbf{Bảng giá trị ngõ ra theo ngõ vào (Step 0.1V):}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+    $V_{in}$ (V) & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1.0 \\ \hline
+    $V_{out}$ (V) & 0.99 & 0.99 & 0.99 & 0.98 & 0.26 & 0.007 & 0.78 & 0.0007 & 0.00006 & 0.000003 \\ \hline
+    \end{tabular}
+\end{center}
+
+\textbf{Các thông số Noise Margin:} Từ đồ thị xác định:
 \begin{itemize}
-    \item Điện áp ngưỡng $V_{THN} \approx 490 \text{ mV} - 509 \text{ mV}$. Việc tăng chiều rộng kênh $W$ hầu như không làm thay đổi bản chất của $V_{TH}$ mà chủ yếu làm tăng khả năng dẫn dòng ($I_D \propto W$).
-    \item Đường có $W = 1\,\mu\text{m}$ có độ dốc lớn nhất ($g_m$ lớn nhất) và cho dòng ra cao nhất.
+    \item $V_{IL}, V_{IH}, V_{OL}, V_{OH}$
+    \item Điểm trung điểm $V_M$
 \end{itemize}
 
+\subsection{Mô phỏng Transient Analysis}
+\textbf{Thiết lập thông số vpulse:} Period = 2ns, Pulse Width = 1ns, $t_r = t_f = 1ps$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{inv_transient_testbench.png}
+    \caption{Testbench mô phỏng Transient cổng Inverter}
+\end{figure}
+
+\textbf{Kết quả dạng sóng ngõ vào/ngõ ra:}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{inv_waveforms.png}
+    \caption{Dạng sóng ngõ vào và ngõ ra của cổng Inverter}
+\end{figure}
+
+\textbf{Kết quả đo đạc thời gian và công suất:}
+% Chèn các hình đo trise, tfall, tpdr, tpdf, tpd và công suất từ slide
+\begin{figure}[H]
+    \centering
+    \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.5\textwidth]{inv_trise.png}}
+    \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.5\textwidth]{inv_tfall.png}}
+    \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{inv_tpdr.png}}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{inv_tpdf.png}}
+    \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.5\textwidth]{inv_tpd.png}}
+\end{figure}
+
+\textbf{Đo công suất (Static and Dynamic Power):}
+\begin{figure}[H]
+    \centering
+    \subfigure[Static Power ($V_{in}=0$)]{\includegraphics[width=0.5\textwidth]{inv_static_pwr_0.png}}
+    \subfigure[Static Power ($V_{in}=1$)]{\includegraphics[width=0.5\textwidth]{inv_static_pwr_1.png}}
+    \subfigure[Dynamic Power]{\includegraphics[width=0.5\textwidth]{inv_dynamic_pwr.png}}
+\end{figure}
+
+\subsection{Hiệu chỉnh kích thước (Adjust $V_M = V_{DD}/2$)}
+Giải thích việc tăng Width của PMOS để bù độ linh động hạt tải thấp.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{inv_adjust_sizing.png}
+    \caption{Hiệu chỉnh kích thước Finger Width của PMOS}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{inv_vm_sweep.png}
+    \caption{Kết quả quét giá trị $V_M$ sau khi hiệu chỉnh (ví dụ tại $W=190ns$)}
+\end{figure}
+
+% =================================================================
+% EXPERIMENT 2: NAND & NOR GATES
+% =================================================================
 \newpage
-\subsection{Khảo sát linh kiện PMOS}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{figures/Lab4 Fig/exp1_pmos_tb.png}
-    \caption{Sơ đồ Testbench khảo sát transistor PMOS}
-\end{figure}
+\section{Experiment 2: Circuit Design for CMOS NOR and NAND Gates}
 
-\subsubsection{Trường hợp quét $V_{SD}$}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_pmos_vsd_graph.png}
-    \caption{Đặc tuyến $I_D - V_{SG}$ của PMOS khi quét $V_{SD}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_pmos_vsd_zoom.png}
-    \caption{Đặc tuyến $I_D - V_{SG}$ phóng to tại điểm $|V_{THP}|$}
-\end{figure}
-
-\textbf{Trích xuất số liệu (Tables):}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{figures/Lab4 Fig/exp1_pmos_vsd_tab1.png}
-    \caption{Bảng dòng $I_D$ của PMOS}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/Lab4 Fig/exp1_pmos_vsd_tab2.png}
-    \caption{Bảng thông số chi tiết của PMOS quét $V_{SD}$}
-\end{figure}
-
-\subsubsection{Trường hợp quét $W$}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_pmos_w_graph.png}
-    \caption{Đặc tuyến $I_D - V_{SG}$ của PMOS khi quét $W$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Lab4 Fig/exp1_pmos_w_zoom.png}
-    \caption{Đặc tuyến phóng to tại $|V_{THP}|$ ứng với các mức $W$}
-\end{figure}
-\newpage
-\textbf{Trích xuất số liệu (Tables):}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{figures/Lab4 Fig/exp1_pmos_w_tab1.png}
-    \caption{Bảng thông số dòng $I_D$ của PMOS quét $W$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/Lab4 Fig/exp1_pmos_w_tab2.png}
-    \caption{Bảng thông số chi tiết (gds, gm...) của PMOS quét $W$}
-\end{figure}
-
-\textbf{Nhận xét PMOS:} 
+\subsection{Cổng NAND}
 \begin{itemize}
-    \item Giá trị $|V_{THP}|$ ước lượng nằm trong khoảng $476 \text{ mV} - 494 \text{ mV}$. 
-    \item Tương tự NMOS, khi $V_{SG} > |V_{THP}|$, PMOS bắt đầu dẫn dòng. Mức độ dẫn dòng phụ thuộc tỉ lệ thuận vào độ rộng kênh $W$.
-\end{itemize}
+    \item \textbf{Bảng chân trị và Hoạt động:} (Trình bày bảng chân trị 2 ngõ vào).
+    \item \textbf{Schematic và Symbol:}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Schematic NAND]{\includegraphics[width=0.45\textwidth]{nand_schematic.png}}
+        \subfigure[Symbol NAND]{\includegraphics[width=0.45\textwidth]{nand_symbol.png}}
+        \caption{Sơ đồ nguyên lý và Symbol cổng NAND}
+    \end{figure}
+    
+    \item \textbf{Khảo sát DC (2 trường hợp):}
+        \begin{enumerate}
+            \item TH1: Thay đổi A, giữ B = 1.
+            \item TH2: Thay đổi B, giữ A = 1.
+        \end{enumerate}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{nand_dc_testbench.png}
+        \caption{Testbench DC cho cổng NAND}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[DC Sweep A (B=1)]{\includegraphics[width=0.45\textwidth]{nand_dc_sweep_A.png}}
+        \subfigure[DC Sweep B (A=1)]{\includegraphics[width=0.45\textwidth]{nand_dc_sweep_B.png}}
+        \caption{Đặc tuyến VTC của cổng NAND trong 2 trường hợp}
+    \end{figure}
 
-\newpage
-\section{Experiment 2: Body Effect (Hiệu ứng thân)}
-\subsection{Mục tiêu}
-Phân tích sự thay đổi của điện áp ngưỡng $V_{TH}$ khi có chênh lệch điện áp $V_{SB}$ giữa cực thân và cực nguồn.
+\textbf{Bảng giá trị ngõ ra theo ngõ vào cho TH1 (Step 0.1V):}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+    $V_{in}$ (V) & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1.0 \\ \hline
+    $V_{out}$ (V) & 0.99 & 0.99 & 0.99 & 0.98 & 0.28 & 0.01 & 0.001 & 0.0001 & 0.00006 & 0.0000006 \\ \hline
+    \end{tabular}
+\end{center}
 
-\subsection{Khảo sát NMOS}
-\subsubsection{Trường hợp quét $V_{SB}$}
-\textbf{Thiết lập:} Quét $V_{GS} \in [0, 1]\text{ V}$. Quét $V_{SB} \in [-1, 1]\text{ V}$ (step 200 mV).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_nmos_vsb_graph.png}
-    \caption{Đặc tuyến $I_D - V_{GS}$ NMOS quét $V_{SB}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_nmos_vsb_zoom.png}
-    \caption{Đặc tuyến phóng to khu vực $V_{TH}$ khi $V_{SB}$ thay đổi}
-\end{figure}
-\newpage
-\textbf{Số liệu trích xuất:}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/exp2/exp2_nmos_vsb_tab1.png}
-    \caption{Bảng thông số chi tiết NMOS quét $V_{SB}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{figures/exp2/exp2_nmos_vsb_tab2.png}
-    \caption{Bảng thông số dòng $I_D$}
-\end{figure}
+\textbf{Bảng giá trị ngõ ra theo ngõ vào cho TH2 (Step 0.1V):}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+    \hline
+    $V_{in}$ (V) & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1.0 \\ \hline
+    $V_{out}$ (V) & 0.99 & 0.99 & 0.99 & 0.98 & 0.33 & 0.01 & 0.001 & 0.0001 & 0.00006 & 0.0000006 \\ \hline
+    \end{tabular}
+\end{center}
 
-\subsubsection{Trường hợp quét $V_{DS}$ kết hợp $V_{SB}$ và $W$}
-\textbf{Thiết lập:} Quét $V_{DS} \in [0, 1]\text{ V}$. Quét $V_{SB} \in \{-500, 0, 500\} \text{ mV}$, quét $W \in [250\text{ nm}, 1\mu\text{m}]$.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_nmos_vds_vsb_w_graph.png}
-    \caption{Đặc tuyến $I_D - V_{DS}$ NMOS quét $V_{SB}$ và $W$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_nmos_vds_vsb_w_zoom.png}
-    \caption{Vùng hoạt động tuyến tính và bão hòa tại các mức $V_{SB}$ khác nhau}
-\end{figure}
-\newpage
-\textbf{Số liệu trích xuất:}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{figures/exp2/exp2_nmos_vds_vsb_w_tab1.png} \hspace{0.2cm}
-    \includegraphics[width=0.45\textwidth]{figures/exp2/exp2_nmos_vds_vsb_w_tab2.png}
-    \caption{Bảng dòng $I_D$ và các thông số điện áp tương ứng theo $V_{SB}, W$}
-\end{figure}
+    \begin{table}[H]
+        \centering
+        \caption{Các thông số đặc tính tĩnh DC của cổng NAND 2 ngõ vào}
+        \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Case} & \textbf{State} & \textbf{$V_{IL}$ (V)} & \textbf{$V_{IH}$ (V)} & \textbf{$V_M$ (V)} & \textbf{$V_{OL}$ (V)} & \textbf{$V_{OH}$ (V)} \\ \hline
+        Case 1 & A sweep, B = 1 & 0.3847 & 0.5369 & 0.4578 & 0.0039 & 0.9998  \\ \hline
+        Case 2 & B sweep, A = 1 & 0.4285 & 0.5843 & 0.4996 & 0.0039 & 0.9998 \\ \hline
+        \end{tabular}
+    \end{table}
 
-\textbf{Nhận xét NMOS:}
-\begin{itemize}
-    \item Theo công thức hiệu ứng Body: $V_{TH} = V_{TH0} + \gamma (\sqrt{|2\Phi_F + V_{SB}|} - \sqrt{|2\Phi_F|})$. Khi $V_{SB}$ tăng dần về giá trị dương ($V_{SB} > 0$), $V_{TH}$ tăng lên làm đường cong $I_D - V_{GS}$ bị đẩy dịch sang phải.
-    \item Khi $V_{SB}$ thay đổi, vùng hoạt động vẫn tuân thủ theo nguyên lý cũ (Triode ở $V_{DS}$ nhỏ và Saturation ở $V_{DS}$ lớn), nhưng biên độ dòng bão hòa bị sụt giảm mạnh nếu $V_{SB}$ dương do $V_{OV}$ bị thu hẹp.
-\end{itemize}
-
-\subsection{Khảo sát PMOS}
-%\textbf{Cơ sở lý thuyết (Trích xuất từ Note):}
-%\begin{figure}[H]
- %   \centering
-%    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_pmos_theory_note.png}
- %   \caption{Lý thuyết về sự mở rộng vùng nghèo và hiệu ứng Body từ tài liệu}
-%\end{figure}
-
-\subsubsection{Trường hợp quét $V_{BS}$}
-\textbf{Thiết lập:} Quét $V_{SG} \in [0, 1]\text{ V}$. Quét $V_{BS} \in [-1, 1]\text{ V}$.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_pmos_vbs_graph.png}
-    \caption{Đặc tuyến $I_D - V_{SG}$ PMOS quét $V_{BS}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_pmos_vbs_minus1.png}
-    \caption{Trường hợp cá biệt $V_{BS} = -1\text{V}$ (Diode ký sinh phân cực thuận)}
-\end{figure}
-
-\textbf{Biện luận trường hợp $V_{BS} = -1\text{ V}$:} Kết quả mô phỏng cho thấy dòng điện tăng đột ngột lên mức rất lớn, xấp xỉ $6\text{ mA}$. Hiện tượng này xuất phát từ việc tiếp giáp P--N giữa cực Source và Body (N-well) bị phân cực thuận mạnh, làm dòng điện chủ yếu đi qua diode ký sinh thay vì kênh dẫn của transistor. Do đó, trong thiết kế vi mạch thực tế, điều kiện phân cực này cần được tránh nhằm hạn chế dòng ký sinh lớn và ngăn ngừa nguy cơ suy giảm độ tin cậy hoặc hư hỏng linh kiện.
-
-\textbf{Số liệu trích xuất:}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{figures/exp2/exp2_pmos_vbs_tab1.png}
-    \caption{Bảng thông số dòng $I_D$ quét $V_{BS}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/exp2/exp2_pmos_vbs_tab2.png}
-    \caption{Bảng thông số chi tiết PMOS quét $V_{BS}$}
-\end{figure}
-
-\subsubsection{Trường hợp quét $V_{SD}$ kết hợp $V_{BS}$ và $W$}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp2/exp2_pmos_vsd_vbs_w.png}
-    \caption{Đặc tuyến $I_D - V_{SD}$ PMOS quét $V_{BS}$ và $W$}
-\end{figure}
-
-\subsection{Thảo luận về việc triệt tiêu Body Effect}
-\textbf{Câu hỏi định hướng:} \textit{"We can always connect the body terminal to the source terminal of MOSFET to ignore the body effect."}
-\begin{itemize}
-    \item \textbf{Khẳng định:} Đây là nhận định \textbf{SAI} đối với các quy trình chế tạo CMOS chuẩn.
-    \item \textbf{Giải thích:} PMOS nằm trong các giếng N-Well độc lập, do đó ta có thể dễ dàng nối chập cực Body và Source của từng PMOS để ép $V_{BS} = 0$. Tuy nhiên, với NMOS, tất cả các linh kiện đều dùng chung đế P-Substrate (nối đất 0V). Khi có các NMOS mắc nối tiếp (ví dụ NAND gate), NMOS ở trên sẽ có Source $> 0V$ trong khi Body $= 0V$, dẫn đến $V_{SB} > 0$. Body effect ở NMOS trong mạch Stacked là không thể triệt tiêu.
-\end{itemize}
-
-\newpage
-\section{Experiment 3: Channel Length Modulation - CLM (Hiệu ứng điều chế chiều dài kênh)}
-
-\subsection{Kết quả mô phỏng đặc tuyến $I_D - V_{DS}$ qua các trường hợp khảo sát}
-\textbf{Mục tiêu:} Phân tích hành vi của dòng cực máng $I_D$ khi điện áp $V_{DS}$ thay đổi lớn nhằm nhận diện tính không lý tưởng của vùng bão hòa, xác định điện áp ngưỡng $V_{TH}$ và điện áp quá vận $V_{OV} = V_{GS} - V_{THN}$.
-
-\subsubsection{Trường hợp 1: Quét tham số $V_{GS}$ ($V_{SG}$)}
-\textbf{Linh kiện NMOS:} Quét $V_{DS} \in [0,1]\text{V}$ với bước 1 mV, tham số quét $V_{GS} \in [0,1]\text{V}$ (bước nhảy 200mV).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/exp3/exp3_nmos_vds_vgs_graph.png}
-    \caption{Đặc tuyến $I_D - V_{DS}$ của NMOS khi quét tham số $V_{GS}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{figures/exp3/exp3_nmos_vds_vgs_tab.png}
-    \caption{Bảng thông số uốn đặc tuyến dòng $I_D$ của NMOS khi quét $V_{GS}$}
-\end{figure}
-
-\textbf{Linh kiện PMOS:} Quét $V_{SD} \in [0,1]\text{V}$ với bước 1 mV, tham số quét $V_{SG} \in [0,1]\text{V}$ (bước nhảy 200mV).
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/exp3/exp3_pmos_vsd_vsg_graph.png}
-    \caption{Đặc tuyến $I_D - V_{SD}$ của PMOS khi quét $V_{SG}$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{figures/exp3/exp3_pmos_vsd_vsg_tab.png}
-    \caption{Bảng thông số uốn đặc tuyến dòng $I_D$ của PMOS khi quét $V_{SG}$}
-\end{figure}
-
-\subsubsection{Trường hợp 2: Quét tham số chiều rộng kênh $W$}
-\textbf{Thiết lập:} Quét $V_{DS}$ ($V_{SD}$) $\in [0,1]\text{V}$, tham số quét $W \in [250\text{nm}, 1\mu\text{m}]$ với bước nhảy 250nm.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/exp3/exp3_nmos_vds_w_graph.png}
-    \caption{Đặc tuyến $I_D - V_{DS}$ của NMOS khi quét tham số chiều rộng kênh dẫn $W$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/exp3/exp3_pmos_vsd_w_graph.png}
-    \caption{Đặc tuyến $I_D - V_{SD}$ của PMOS khi quét tham số $W$}
-\end{figure}
-
-%\textbf{Trích xuất kết quả cửa sổ hiển thị (Results Display Windows) bổ sung:}
-%\begin{figure}[H]
-%    \centering
-%    \IfFileExists{figures/exp3/image_5338c1.jpg}{%
-%        \includegraphics[width=0.85\textwidth]{figures/exp3/image_5338c1.jpg}%
-%    }{\fbox{\parbox{0.85\textwidth}{\centering Missing figure: \texttt{figures/exp3/image\_5338c1.jpg}}}}
-%    \caption{Cửa sổ hiển thị dữ liệu hoạt động chi tiết của NMOS ứng với kịch bản quét kích thước hình học}
-%\end{figure}
-%\begin{figure}[H]
-%    \centering
-%    \IfFileExists{figures/exp3/image_5338a3.jpg}{
-%        \includegraphics[width=0.85\textwidth]{figures/exp3/image_5338a3.jpg}%
-%    }{\fbox{\parbox{0.85\textwidth}{\centering Missing figure: \texttt{figures/exp3/image\_5338a3.jpg}}}}
-%    \caption{Cửa sổ hiển thị dữ liệu hoạt động chi tiết của PMOS ứng với kịch bản quét kích thước hình học}
-%\end{figure}
-
-\subsubsection{Trường hợp 3: Quét tham số chiều dài kênh $L$}
-\textbf{Thiết lập:} Quét $V_{DS}$ ($V_{SD}$) $\in [0,1]\text{V}$, tham số quét $L \in [45\text{nm}, 450\text{nm}]$ với bước nhảy 45nm.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/exp3/exp3_nmos_vds_l_graph.png}
-    \caption{Đặc tuyến $I_D - V_{DS}$ của NMOS khi quét tham số chiều dài $L$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{figures/exp3/exp3_nmos_vds_l_tab.png}
-    \caption{Bảng tra cứu giá trị uốn bão hòa lý tưởng cho NMOS theo độ dài kênh}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/exp3/exp3_pmos_vsd_l_graph.png}
-    \caption{Đặc tuyến $I_D - V_{SD}$ của PMOS khi quét tham số chiều dài $L$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{figures/exp3/exp3_pmos_vds_l_tab.png}
-    \caption{Bảng tra cứu giá trị uốn bão hòa lý tưởng cho PMOS theo độ dài kênh}
-\end{figure}
-
-\subsection{Đánh giá định lượng và Thảo luận kết quả}
-Dựa trên 3 tập đồ thị và 2 bảng thông số trích xuất ở trên, nhóm tiến hành phân tích các đặc tính hình học và vật lý của linh kiện:
-
-\begin{itemize}
-    \item \textbf{Xác định Overdrive Voltage ($V_{OV}$ - điện áp quá vận):} Điểm uốn uốn phân tách giữa vùng Triode (tuyến tính) và vùng Saturation (bão hòa) trên các đường cong đặc tuyến chính là điện áp bão hòa $V_{DS,sat} = V_{GS} - V_{THN}$. Đối với đường quét tại $V_{GS} = 600\text{ mV}$, điểm Pinch-off xuất hiện trong khoảng $V_{DS} \approx 110\text{ mV} - 140\text{ mV}$, hoàn toàn khớp với giá trị điện áp ngưỡng $V_{TH}$ được ghi nhận trên hệ thống hiển thị dữ liệu chi tiết.
-    \item \textbf{Channel Length Modulation - CLM (Hiệu ứng điều chế chiều dài kênh):} Trong vùng bão hòa ($V_{DS} > V_{OV}$), đặc tuyến dòng điện của các thiết bị có chiều dài ngắn ($L = 45\text{ nm}$) không duy trì trạng thái hằng số nằm ngang lý tưởng mà dốc lên khá rõ do sự mở rộng của vùng nghèo phía cực máng làm rút ngắn chiều dài kênh hiệu dụng.
-    \item \textbf{Giải pháp thiết kế giảm độ dốc dòng bão hòa:} Do hệ số điều chế chiều dài kênh $\lambda$ tỉ lệ nghịch với chiều dài hình học kênh dẫn ($\lambda \propto 1/L$), nội trở ngõ ra bão hòa $r_o$ tăng tỉ lệ thuận với độ dài linh kiện ($r_o = \frac{1}{\lambda I_D} \propto L$). Trực quan hóa từ \textit{Graph 3}, đặc tuyến dòng điện của transistor dịch chuyển phẳng dần khi tăng $L$ từ $45\text{ nm}$ lên $450\text{ nm}$. Vì vậy, phương án tối ưu để giảm độ dốc dòng bão hòa trong thiết kế cấu trúc Current Mirror (nguồn dòng gương) là **tăng chiều dài kênh $L$ của linh kiện**.
-\end{itemize}
-
-\newpage
-\subsection{Stacked Transistors (Khảo sát cấu trúc transistor xếp chồng)}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp3/exp3_stacked_tb.png}
-    \caption{Sơ đồ mạch Testbench: Stacked $M_1, M_2$ so sánh với $M_3$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp3/exp3_stacked_graph.png}
-    \caption{So sánh đặc tuyến dòng $I_D$ cấu trúc Stacked}
-\end{figure}
-
-\textbf{Kết quả mô phỏng từ Tables (Bảng số liệu):}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{figures/exp3/exp3_stacked_tab1.png} \hspace{0.2cm}
-    \includegraphics[width=0.45\textwidth]{figures/exp3/exp3_stacked_tab2.png}
-    \caption{Thông số mô phỏng của nhánh Stacked (trái) và NMOS đơn tương đương (phải)}
-\end{figure}
-
-\textbf{Biện luận và Chứng minh lý thuyết:}
-\begin{itemize}
-    \item \textbf{Vùng hoạt động tại mức điểm $V_{GS} = V_{DS} = 500\text{ mV}$:} 
-    Với mức điện áp ngưỡng ước lượng $V_{THN} \approx 380\text{ mV}$, ta tính được điện áp quá vận $V_{OV} = V_{GS} - V_{THN} = 500 - 380 = 120\text{ mV}$. 
+    \noindent\textbf{Ghi chú và giải thích các trường hợp khảo sát:}
     \begin{itemize}
-        \item Đối với linh kiện đơn $M_3$: Do thỏa mãn điều kiện $V_{DS} = 500\text{ mV} \ge V_{OV} = 120\text{ mV}$, nên $M_3$ hoạt động ở vùng \textbf{Saturation (Bão hòa)}.
-        \item Đối với cặp xếp chồng: Linh kiện phía trên $M_2$ hoạt động ở vùng \textbf{Saturation (Bão hòa)} chịu trách nhiệm ghim dòng bão hòa cho toàn nhánh, trong khi linh kiện phía dưới $M_1$ có điện áp nút trung gian nhỏ nên hoạt động ở vùng \textbf{Triode (Tuyến tính)}.
+        \item \textbf{Case 1 (A sweep, B = 1):} Ngõ vào B được giữ cố định ở mức logic cao ($V_{DD} = 1V$), ngõ vào A quét tuyến tính từ 0V đến 1V. Trong trường hợp này, PMOS nối với ngõ vào B ngắt hoàn toàn và NMOS tương ứng dẫn mạnh. Cổng NAND hoạt động tương tự như một mạch nghịch lưu (Inverter) đối với ngõ vào A. Do hiện tượng xếp chồng (stacking effect) của các transistor NMOS nối tiếp, điện áp ngưỡng chuyển mạch $V_M$ dịch chuyển nhẹ.
+        \item \textbf{Case 2 (B sweep, A = 1):} Ngõ vào A được giữ cố định ở mức logic cao (1V), ngõ vào B quét tuyến tính từ 0V đến 1V. Do vị trí hình học của transistor NMOS nhận tín hiệu B nằm ở phía dưới (gần cực Ground hơn) so với NMOS nhận tín hiệu A, điện trở kênh dẫn hiệu dụng và hiệu ứng thân (body effect) có sự khác biệt. Điều này dẫn đến điện áp ngưỡng $V_M$ tăng lên đáng kể (0.4996V so với 0.4578V) và làm thay đổi lề nhiễu tĩnh ($NM_L, NM_H$).
     \end{itemize}
 
-    \item \textbf{Tính tương đương của hai trường hợp:} 
-    Kết quả mô phỏng cho thấy hai kịch bản có đặc tuyến dòng điện trùng khít hoàn toàn lên nhau. Điều này được chứng minh bằng lý thuyết giải tích mạch như sau:
-    
-    Gọi $V_X$ là điện áp tại nút trung gian giữa $M_1$ và $M_2$. Giả sử hai transistor lý tưởng có cùng hệ số công nghệ $\beta = \mu_n C_{ox} W$.
-    
-    Dòng điện chạy qua $M_1$ (vùng Tuyến tính):
-    $$ I_{D1} = \beta \frac{1}{L} \left[ (V_{GS} - V_{THN})V_X - \frac{V_X^2}{2} \right] $$
-    Dòng điện chạy qua $M_2$ (vùng Tuyến tính/Bão hòa tổng quát):
-    $$ I_{D2} = \beta \frac{1}{L} \left[ (V_{GS} - V_X - V_{THN})(V_{DS} - V_X) - \frac{(V_{DS} - V_X)^2}{2} \right] $$
-    Vì $M_1$ và $M_2$ mắc nối tiếp nên dòng điện qua chúng phải bằng nhau ($I_{D1} = I_{D2} = I_D$). Cộng hai vế phương trình dòng điện của $I_{D1}$ và $I_{D2}$, ta triệt tiêu được các thành phần chứa điện áp nút trung gian $V_X$:
-    $$ 2I_D = I_{D1} + I_{D2} = \beta \frac{1}{L} \left[ (V_{GS} - V_{THN})V_{DS} - \frac{V_{DS}^2}{2} \right] $$
-    $$ \implies I_D = \mu_n C_{ox} \frac{W}{2L} \left[ (V_{GS} - V_{THN})V_{DS} - \frac{V_{DS}^2}{2} \right] $$
-    
-    Phương trình cấu trúc dòng điện này hoàn toàn trùng khớp với phương trình dòng của một transistor đơn duy nhất có chiều dài kênh bằng tổng hai chiều dài thành phần $L_{eq} = L_1 + L_2 = 2L$. Với $L = 45\text{ nm}$, chiều dài tương đương chính xác bằng $90\text{ nm}$, tương ứng với thông số hình học của linh kiện $M_3$. Do đó, về mặt bản chất dòng điện, hai test case cho đồ thị đặc tính hoàn toàn giống nhau.
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số của trường hợp 1:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{nand_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient cổng NAND (Trường hợp 1)}
+    \end{figure}
+
+    % Bảng tổng hợp kết quả từ Calculator cho TH1
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số thời gian và công suất bằng Calculator (TH1)}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{($\mu$W)} \\ \hline
+        17,71 & 21,75 & 10,65 & 12,58 & 11.195 & 14,5 & 13,2 & 0,746 \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.5\textwidth]{nand_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.5\textwidth]{nand_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.5\textwidth]{nand_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.5\textwidth]{nand_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống cổng NAND kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{nand_tpdr.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{nand_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{nand_tpdf.png}}
+        \subfigure[Calc $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{nand_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.5\textwidth]{nand_tpd.png}}
+        \caption{Các thông số độ trễ cổng NAND kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.6\textwidth]{nand_static_pwr_0.png}}
+        \subfigure[Static Pwr (1)]{\includegraphics[width=0.6\textwidth]{nand_static_pwr_1.png}}
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.6\textwidth]{nand_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động cổng NAND}
+    \end{figure}
+
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số của trường hợp 2:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{nand2_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient cổng NAND}
+    \end{figure}
+% Bảng tổng hợp kết quả từ Calculator cho TH2
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số thời gian và công suất bằng Calculator (TH2)}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{(nW)} \\ \hline
+        20,38 & 21,8 & 12,68 & 14,21 & 13,05 & 13,7 & 13,2 & 19,14 \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.5\textwidth]{nand2_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.5\textwidth]{nand2_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.5\textwidth]{nand2_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.5\textwidth]{nand2_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống cổng NAND kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{nand2_tpdr.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{nand2_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{nand2_tpdf.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{nand2_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.5\textwidth]{nand2_tpd.png}}
+        \caption{Các thông số độ trễ cổng NAND}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.5\textwidth]{nand2_static_pwr_0.png}}
+        \subfigure[Static Pwr (1)]{\includegraphics[width=0.5\textwidth]{nand2_static_pwr_1.png}}
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.5\textwidth]{nand2_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động cổng NAND}
+    \end{figure}
+
+    \item \textbf{Hiệu chỉnh kích thước (Adjust $V_M = V_{DD}/2$):}
+
+Để đạt được điện áp chuyển mạch $V_M \approx V_{DD}/2$, kích thước của transistor PMOS được tăng lên so với NMOS nhằm bù lại độ linh động hạt tải của PMOS thấp hơn so với NMOS. Bằng cách ta sẽ thay đổi giá trị Finger Width của cả 2 Pmos. Đầu tiên ta sẽ đặt biến width M vào chỗ Finger Width để quét giá trị.
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Thiết lập Sweep]{\includegraphics[width=0.5\textwidth]{nand_sizing_setup.png}}
+        \subfigure[Kết quả Sweep VTC TH1 tại width=165ns]{\includegraphics[width=0.65\textwidth]{nand_sizing_result1.png}}
+        \subfigure[Kết quả Sweep VTC TH2 tại width=170ns]{\includegraphics[width=0.65\textwidth]{nand_sizing_result2.png}}
+        \caption{Hiệu chỉnh kích thước để tối ưu điểm chuyển mạch cho cổng NAND}
+    \end{figure}
 \end{itemize}
 
-\newpage
-\subsection{Parallel Transistors (Khảo sát cấu trúc transistor song song)}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp3/exp3_parallel_tb.png}
-    \caption{Sơ đồ mạch Testbench: Parallel $M_1 // M_2$ so sánh với $M_3$}
-\end{figure}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/exp3/exp3_parallel_graph.png}
-    \caption{So sánh đặc tuyến dòng $I_D$ cấu trúc Parallel}
-\end{figure}
+\subsection{Cổng NOR}
+\begin{itemize}
+    \item \textbf{Bảng chân trị và Hoạt động:} (Trình bày bảng chân trị).
+    \item \textbf{Schematic và Symbol:}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Schematic NOR]{\includegraphics[width=0.45\textwidth]{nor_schematic.png}}
+        \subfigure[Symbol NOR]{\includegraphics[width=0.45\textwidth]{nor_symbol.png}}
+        \caption{Sơ đồ nguyên lý và Symbol cổng NOR}
+    \end{figure}
+    
+    \item \textbf{Khảo sát DC (2 trường hợp):}
+        \begin{enumerate}
+            \item TH1: Thay đổi A, giữ B = 0.
+            \item TH2: Thay đổi B, giữ A = 0.
+        \end{enumerate}
+    \begin{figure}[H]
+        \centering
+        \subfigure[DC Sweep A (B=0)]{\includegraphics[width=0.45\textwidth]{nor_dc_sweep_A.png}}
+        \subfigure[DC Sweep B (A=0)]{\includegraphics[width=0.45\textwidth]{nor_dc_sweep_B.png}}
+        \caption{Đặc tuyến VTC của cổng NOR}
+    \end{figure}
+    \begin{table}[H]
+        \centering
+        \caption{Các thông số đặc tính tĩnh DC của cổng NOR 2 ngõ vào}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Case} & \textbf{State} & \textbf{$V_{IL}$ (V)} & \textbf{$V_{IH}$ (V)} & \textbf{$V_M$ (V)} & \textbf{$V_{OL}$ (V)} & \textbf{$V_{OH}$ (V)} \\ \hline
+        Case 1 & A sweep, B = 0 & 0.3644 & 0.5186 & 0.4374 & 0.0001 & 0.9959  \\ \hline
+        Case 2 & B sweep, A = 0 & 0.4048 & 0.5658 & 0.4789 & 0.0001 & 0.9959  \\ \hline
+        \end{tabular}
+    \end{table}
 
-\textbf{Kết quả mô phỏng (Tables):}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.45\textwidth]{figures/exp3/exp3_parallel_tab1.png} \hspace{0.2cm}
-    \includegraphics[width=0.45\textwidth]{figures/exp3/exp3_parallel_tab2.png}
-    \caption{Thông số mô phỏng của nhánh Parallel (trái) và NMOS đơn (phải)}
-\end{figure}
-
-\textbf{Biện luận:}
-Hai cấu hình này \textbf{hoàn toàn trùng khớp nhau}. Hai transistor $M_1, M_2$ mắc song song ($W=120\text{nm}$) có chung mọi mức điện áp $V_G, V_D, V_S, V_B$. Tổng dòng điện của nhánh bằng tổng dòng của hai NMOS cộng lại. Về mặt toán học: $I_{D(total)} \propto \frac{W_1}{L} + \frac{W_2}{L} = \frac{2W}{L}$, tương đương chính xác với một linh kiện $M_3$ có độ rộng kênh bằng $240\text{nm}$.
-
-\newpage
-\section{Kết luận chung}
-Thông qua chuỗi bài thực hành chuyên sâu về khảo sát và định lượng đặc tính linh kiện MOSFET trên tiến trình công nghệ vi mạch bBulk \texttt{gpdk045} ($45\text{ nm}$), nhóm đã hoàn thành toàn bộ các yêu cầu kỹ thuật và rút ra các kết luận tổng quan mang tính cốt lõi sau:
-
-\begin{enumerate}
-    \item \textbf{Sự tương thích giữa thực nghiệm và lý thuyết hoạt động:} Các đồ thị đặc tuyến truyền đạt $I_D - V_{GS}$ và đặc tuyến ngõ ra $I_D - V_{DS}$ thu được từ Cadence Virtuoso phản ánh hoàn hảo cấu trúc toán học của các vùng hoạt động: Cut-off (nghèo), Triode (tuyến tính), và Saturation (bão hòa) cho cả hai cấu trúc linh kiện nghịch (\texttt{nmos1v\_lvt}) và thuận (\texttt{pmos1v\_lvt}).
-    \item \textbf{Vai trò điều khiển của kích thước hình học:} Thực nghiệm quét tham số kích thước mặt bằng đã chứng minh rõ nét bản chất vật lý của linh kiện:
+    \noindent\textbf{Ghi chú và giải thích các trường hợp khảo sát:}
     \begin{itemize}
-        \item Chiều rộng kênh $W$ tỉ lệ thuận với độ dốc (Transconductance - $g_m$), điều khiển biên độ chịu dòng tối đa của thiết bị mà không làm dịch chuyển điện áp ngưỡng $V_{TH}$.
-        \item Chiều dài kênh $L$ là tham số cốt lõi chi phối nội trở ngõ ra bão hòa $r_o$. Khi chiều dài hình học $L$ càng ngắn, hiệu ứng bậc hai CLM xảy ra càng khốc liệt khiến đồ thị dòng bão hòa bị dốc lên đáng kể. Do đó, tăng chiều dài $L$ là giải pháp thiết kế bắt buộc khi cấu trúc các nguồn dòng gương (Current Mirror) yêu cầu độ ổn định cao.
+        \item \textbf{Case 1 (A sweep, B = 0):} Ngõ vào B được giữ cố định ở mức logic thấp (0V), ngõ vào A quét tuyến tính từ 0V đến 1V. Lúc này, NMOS nối với B bị khóa hoàn toàn, PMOS tương ứng ở trạng thái dẫn. Cấu trúc mạch tương đương với một cổng Inverter tác động bởi ngõ vào A. Do đặc thù các transistor PMOS nối tiếp xếp chồng lên nhau làm tăng điện trở kéo lên (pull-up resistance), điểm chuyển mạch $V_M$ bị kéo dịch về phía điện áp thấp hơn.
+        \item \textbf{Case 2 (B sweep, A = 0):} Ngõ vào A được giữ cố định ở mức logic thấp (0V), ngõ vào B quét tuyến tính từ 0V đến 1V. Sự bất đối xứng về vị trí sơ đồ giữa hai mạng PMOS mắc nối tiếp kéo nguồn khiến cho điện dung ký sinh và nội trở sụt áp tại điểm nút giữa hai transistor thay đổi. Kết quả mô phỏng cho thấy điểm ngưỡng chuyển mạch $V_M$ đạt 0.4789V, kéo theo sự thay đổi tương ứng của các khoảng lề nhiễu logic thấp và lề nhiễu logic cao.
     \end{itemize}
-    \item \textbf{Làm rõ bản chất các hiệu ứng bậc hai (Second-order effects):} 
-    \begin{itemize}
-        \item \textit{Body Effect (Hiệu ứng thân):} Việc phân cực ngược mối nối Source - Body ($V_{SB} > 0$) làm mở rộng vùng nghèo ký sinh, gián tiếp làm tăng điện áp ngưỡng $V_{TH}$ và làm suy giảm điện áp quá vận $V_{OV}$ của linh kiện. Việc phản biện thành công giả thuyết luôn loại bỏ được Body effect giúp nhóm thấu hiểu sâu sắc các ràng buộc vật lý về chia sẻ đế P-substrate chung trong các cổng logic tĩnh Standard CMOS.
-        \item \textit{Channel Length Modulation (CLM - Hiệu ứng điều chế chiều dài kênh):} Đã định lượng được sự không lý tưởng của nguồn dòng thông qua độ dốc của đồ thị $I_D$. Việc uốn cong điện áp bão hòa thực tế tại điểm uốn $V_{DS,sat}$ giúp nhóm xác định chính xác ranh giới phân cực tĩnh cho linh kiện.
-    \end{itemize}
-    \item \textbf{Ý nghĩa của cấu trúc Stacked và Multiplier:} Kết quả mô phỏng so sánh hai mô hình phân nhánh nối tiếp và song song đã kiểm chứng trực quan các định luật mạch kinh điển (KCL, điện trở tương đương) trong môi trường vi mạch thực tế. Sự xuất hiện của Body effect ký sinh tại node chung của cấu trúc xếp chồng chính là bài học định lượng đắt giá về việc tính toán sụt giảm dòng điện mà lý thuyết sơ cấp thường bỏ qua.
-\end{enumerate}
 
-Những kết quả trực quan và số liệu tra cứu chi tiết thu được từ các cửa sổ hiển thị dữ liệu trong bài thí nghiệm này chính là nền tảng kỹ thuật vững chắc, giúp nhóm làm chủ phương pháp ước lượng, tính toán và tối ưu hóa kích thước hình học linh kiện cho các thiết kế mạch tích hợp tĩnh và tương tự phức tạp hơn ở các chương tiếp theo.
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số của trường hợp 1:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{nor_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient cổng NOR}
+    \end{figure}
+% Bảng tổng hợp kết quả từ Calculator cho TH1
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số thời gian và công suất bằng Calculator (TH1)}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{(nW)} \\ \hline
+        34,42 & 12,68 & 21,63 & 7,8 & 14,3 & 0.289 & 0,0634 & 882,3 \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.6\textwidth]{nor_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.5\textwidth]{nor_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.6\textwidth]{nor_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.5\textwidth]{nor_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống cổng NOR}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{nor_tpdr.png}}\hfill
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.40\textwidth]{nor_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{nor_tpdf.png}}\hfill
+        \subfigure[Calc $t_{pdf}$]{\includegraphics[width=0.40\textwidth]{nor_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.5\textwidth]{nor_tpd.png}}
+        \caption{Các thông số độ trễ cổng NOR}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.6\textwidth]{nor_static_pwr_0.png}}
+        \subfigure[Static Pwr (1)]{\includegraphics[width=0.6\textwidth]{nor_static_pwr_1.png}}
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.6\textwidth]{nor_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động cổng NOR}
+    \end{figure}
+
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số của trường hợp 2:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{nor2_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient cổng NOR}
+    \end{figure}
+
+    % Bảng tổng hợp kết quả từ Calculator cho TH2
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số thời gian và công suất bằng Calculator (TH2)}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{(nW)} \\ \hline
+        34,27 & 10,98 & 19,38 & 6,7 & 12,64 & 0,3 & 0,083 & 737,7 \\ \hline
+        \end{tabular}
+    \end{table}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.6\textwidth]{nor2_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.48\textwidth]{nor2_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.6\textwidth]{nor2_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.48\textwidth]{nor2_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống cổng NOR}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.6\textwidth]{nor2_tpdr.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.48\textwidth]{nor2_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.6\textwidth]{nor2_tpdf.png}}
+        \subfigure[Calc $t_{pdf}$]{\includegraphics[width=0.48\textwidth]{nor2_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.6\textwidth]{nor2_tpd.png}}
+        \caption{Các thông số độ trễ cổng NOR}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.6\textwidth]{nor2_static_pwr_0.png}}
+        \subfigure[Static Pwr (1)]{\includegraphics[width=0.6\textwidth]{nor2_static_pwr_1.png}}
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.6\textwidth]{nor2_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động cổng NOR}
+    \end{figure}
+
+    \item \textbf{Hiệu chỉnh kích thước (Adjust $V_M = V_{DD}/2$):}
+
+Để đạt được điện áp chuyển mạch $V_M \approx V_{DD}/2$, kích thước của transistor PMOS được tăng lên so với NMOS nhằm bù lại độ linh động hạt tải của PMOS thấp hơn so với NMOS. Bằng cách ta sẽ thay đổi giá trị Finger Width của cả 2 PMOS. Đầu tiên ta sẽ đặt biến width M vào chỗ Finger Width để quét giá trị.
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Thiết lập Sweep]{\includegraphics[width=\textwidth]{nor_sizing_setup.png}}
+        \subfigure[Kết quả Sweep VTC TH1 tại width=204ns]{\includegraphics[width=0.65\textwidth]{nor_sizing_result1.png}}
+        \subfigure[Kết quả Sweep VTC TH2 tại width=232ns]{\includegraphics[width=0.65\textwidth]{nor_sizing_result2.png}}
+        \caption{Hiệu chỉnh kích thước để tối ưu điểm chuyển mạch cho cổng NOR}
+    \end{figure}
+\end{itemize}
+\newpage
+
+% =================================================================
+% EXPERIMENT 3: XOR GATE
+% =================================================================
+\section{Experiment 3: Circuit Design for a CMOS XOR Logic Gate}
+\subsection{Cổng logic CMOS XOR}
+\begin{itemize}
+    \item \textbf{Bảng chân trị và Hoạt động:} (Trình bày bảng chân trị và nguyên lý cổng XOR).
+    \item \textbf{Schematic và Symbol:}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Schematic XOR]{\includegraphics[width=0.45\textwidth]{xor_schematic.png}}
+        \subfigure[Symbol XOR]{\includegraphics[width=0.45\textwidth]{xor_symbol.png}}
+        \caption{Sơ đồ nguyên lý và Symbol cổng XOR}
+    \end{figure}
+    
+    \item \textbf{Khảo sát DC (2 trường hợp):}
+        \begin{enumerate}
+            \item TH1: Thay đổi A, giữ B cố định.
+            \item TH2: Thay đổi B, giữ A cố định.
+        \end{enumerate}
+    \begin{figure}[H]
+        \centering
+        \subfigure[DC Sweep A]{\includegraphics[width=0.45\textwidth]{xor_dc_sweep_A.png}}
+        \subfigure[DC Sweep B]{\includegraphics[width=0.45\textwidth]{xor_dc_sweep_B.png}}
+        \caption{Đặc tuyến VTC của cổng XOR trong các trường hợp khảo sát}
+    \end{figure}
+
+    \begin{table}[H]
+        \centering
+        \caption{Các thông số đặc tính tĩnh DC của cổng XOR}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Case} & \textbf{State} & \textbf{$V_{IL}$ (V)} & \textbf{$V_{IH}$ (V)} & \textbf{$V_M$ (V)} & \textbf{$V_{OL}$ (V)} & \textbf{$V_{OH}$ (V)}\\ \hline
+        Case 1 & A sweep, B cố định & 0,429 & 0,538 & 0,488 & 0 & 1  \\ \hline
+        Case 2 & B sweep, A cố định & 0,436 & 0,535 & 0,486 & 0 & 1  \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \noindent\textbf{Ghi chú và giải thích các trường hợp khảo sát:}
+    \begin{itemize}
+        \item \textbf{Case 1:} Khảo sát đặc tính truyền đạt tĩnh khi tín hiệu ngõ vào A thay đổi tuyến tính. Cấu trúc đối xứng hoặc bất đối xứng của các đường nạp/xả nội tại quyết định độ dốc đặc tuyến và các khoảng lề nhiễu logic.
+        \item \textbf{Case 2:} Khảo sát khi ngõ vào B thay đổi. Do sự phân bố vị trí các transistor trong mạng kéo lên và kéo xuống ảnh hưởng tới điện trở kênh và hiệu ứng thân, điểm ngưỡng dịch chuyển nhẹ so với Case 1.
+    \end{itemize}
+
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{xor_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient cổng XOR}
+    \end{figure}
+
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số định thời và công suất bằng Calculator cho XOR}
+        \begin{tabular}{|c|c|c|c|c|c|c|h|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{($\mu$W)} \\ \hline
+        38,58 & 28,3 & 19,97 & 15,46 & 17,315 & 0,47 & 0,5 & 1,22 \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.5\textwidth]{xor_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.5\textwidth]{xor_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.5\textwidth]{xor_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.5\textwidth]{xor_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống cổng XOR kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{xor_tpdr.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{xor_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{xor_tpdf.png}}
+        \subfigure[Calc $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{xor_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.5\textwidth]{xor_tpd.png}}
+        \caption{Các thông số độ trễ cổng XOR kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.52\textwidth]{xor_static_pwr_0.png}}
+        \subfigure[Static Pwr (1)]{\includegraphics[width=0.5\textwidth]{xor_static_pwr_1.png}}
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.52\textwidth]{xor_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động cổng XOR}
+    \end{figure}
+\end{itemize}
+
+\textbf{Thiết kế cổng logic CMOS XNOR từ cổng XOR ở trên.}
+\begin{itemize}
+\item \textbf{Schematic và Symbol:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{1.png}
+        \caption{Symbol của XNOR}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth]{2.png}
+        \caption{Schematic của XNOR}
+    \end{figure}
+
+    \item \textbf{Mô phỏng Transient và khảo sát các thông số đặc tính năng lượng, định thời:}
+    
+    % Hình 1: Transient Analysis
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{xnor_schematic.png}
+        \caption{Kết quả mô phỏng Transient của cổng XNOR (Transient analysis of XNOR gate)}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{xnor_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient của cổng XNOR (Transient analysis of XNOR gate)}
+    \end{figure}
+    \item \textbf{Nhận xét và phân tích chuyên sâu về sự khác biệt giữa cổng NOR và cổng XNOR:}
+\end{itemize}
+Dựa trên các kết quả mô phỏng đặc tính tĩnh (DC) và đặc tính động (Transient), ta có các đánh giá định tính và định lượng về sự khác biệt bản chất giữa cấu trúc tế bào logic tiêu chuẩn NOR và XNOR:
+\begin{itemize}
+    \item \textbf{Cấu trúc liên kết mạch và Số lượng Transistor:} 
+    Cổng NOR 2 ngõ vào sử dụng cấu trúc CMOS tĩnh bổ sung cơ bản chỉ bao gồm 4 transistor (2 PMOS mắc nối tiếp ở mạng kéo lên PUN và 2 NMOS mắc song song ở mạng kéo xuống PDN). Ngược lại, cổng XNOR là một cấu trúc phức hợp, đòi hỏi số lượng bóng bán dẫn lớn hơn rất nhiều (thường từ 8 đến 12 transistor tùy thuộc vào việc sử dụng cấu trúc logic tĩnh hoàn toàn hay cấu trúc cổng truyền). Việc có mật độ transistor cao dẫn đến số lượng nút mạch nội tại tăng lên, làm tăng đáng kể dung kháng ký sinh tổng thể của cổng XNOR so với NOR.
+    
+    \item \textbf{Đặc tính tĩnh và Ngưỡng chuyển mạch $V_M$:} 
+    Đối với cổng NOR, đặc tuyến chuyển vị điện áp VTC tuân theo dạng dốc đơn điệu cơ bản, trong đó điểm chuyển mạch $V_M$ bị ảnh hưởng nặng bởi hiệu ứng xếp chồng của mạng PMOS nối tiếp. Đối với XNOR, đặc tính tĩnh phức tạp hơn rất nhiều do ngõ ra không đơn điệu phụ thuộc vào một ngõ vào đơn lẻ mà phụ thuộc vào hàm tương quan giữa hai tín hiệu ngõ vào (đồng pha hoặc ngược pha). Do đó, đồ thị VTC của XNOR thay đổi hoàn toàn cấu trúc tùy thuộc vào kịch bản phối hợp mức logic nền của ngõ vào còn lại, khiến việc thiết lập Sizing hình học để đạt điểm đối xứng lý tưởng $V_M = V_{DD}/2$ phức tạp hơn cổng NOR.
+    
+    \item \textbf{Đặc tính động và Thời gian trễ truyền dẫn ($t_{pd}$):} 
+    Mạch kéo lên của cổng NOR bị giới hạn tốc độ ở cạnh lên ($t_{rise}$) do độ linh động hạt tải của PMOS thấp kết hợp với cấu trúc mắc nối tiếp. Tuy nhiên, đường trễ tới hạn của cổng XNOR lại kéo dài hơn do tín hiệu ngõ vào phải đi qua các tầng nghịch lưu nội bộ để tạo ra các tín hiệu đảo ($\overline{A}, \overline{B}$) trước khi kích thích tầng logic quyết định phía sau. Sự trễ pha giữa tín hiệu gốc và tín hiệu đảo nội tại khiến tổng thời gian trễ truyền dẫn trung bình $t_{pd}$ của cổng XNOR lớn hơn hẳn so với cổng NOR đơn tầng.
+    
+    \item \textbf{Công suất tiêu thụ:} 
+    Do hệ số hoạt động chuyển mạch của các nút nội tại trong XNOR cao hơn, mức tiêu thụ năng lượng của nó vượt trội so với NOR. Cổng XNOR tiêu thụ cả công suất tĩnh (do dòng rò qua nhiều transistor hơn) lẫn công suất động (do quá trình nạp/xả liên tục của các tụ ký sinh nội tại tại các nút nghịch lưu đảo pha) lớn hơn cổng NOR. Ngoài ra, do tồn tại độ lệch thời gian giữa tín hiệu thẳng và tín hiệu đảo trong mạch, cổng XNOR xuất hiện các dòng ngắn mạch dạng xung nhọn trong giai đoạn quá độ nhiều hơn, làm tăng tổng công suất tiêu thụ của linh kiện.
+\end{itemize}
+
+
+% =================================================================
+% EXPERIMENT 4: MUX CIRCUIT
+% =================================================================
+\newpage
+\section{Experiment 4: Circuit Design for a CMOS MUX Circuit}
+
+\subsection{MUX Topology 1 (MUX Đảo)}
+\begin{itemize}
+    \item \textbf{Schematic và Symbol:}.
+    \begin{figure}[H]
+        \centering
+        \subfigure[Schematic MUX1]{\includegraphics[width=0.9\textwidth]{mux1_schematic.png}}
+        \subfigure[Schematic MUX1]{\includegraphics[width=0.6\textwidth]{mux1_symbol.png}}
+        \caption{Sơ đồ nguyên lý và Symbol của MUX1}
+    \end{figure}
+
+    \item \textbf{Khảo sát DC (4 trường hợp đầy đủ):}
+        \begin{enumerate}
+            \item TH1: Thay đổi D0 ($S=0, D1=1$).
+            \item TH2: Thay đổi D0 ($S=1, D1=1$).
+            \item TH3: Thay đổi D1 ($S=0, D0=1$).
+            \item TH4: Thay đổi D1 ($S=1, D0=1$).
+        \end{enumerate}
+    \begin{figure}[H]
+        \centering
+        \subfigure[DC Sweep TH1]{\includegraphics[width=0.6\textwidth]{mux1_dc_sweep_D0.png}}
+        \subfigure[DC Sweep TH2]{\includegraphics[width=0.6\textwidth]{mux1_dc_sweep_D1.png}}
+        \subfigure[DC Sweep TH3]{\includegraphics[width=0.6\textwidth]{mux1_dc_sweep_D2.png}}
+        \subfigure[DC Sweep TH4]{\includegraphics[width=0.6\textwidth]{mux1_dc_sweep_D3.png}}
+        \caption{Đặc tuyến VTC của MUX Topology 1 trong các trường hợp khảo sát}
+    \end{figure}
+
+    \begin{table}[H]
+        \centering
+        \caption{Các thông số đặc tính tĩnh DC của mạch MUX Topology 1}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Case} & \textbf{State} & \textbf{$V_{IL}$ (V)} & \textbf{$V_{IH}$ (V)} & \textbf{$V_M$ (V)} & \textbf{$V_{OL}$ (V)} & \textbf{$V_{OH}$ (V)} \\ \hline
+        TH1 & Sweep D0 ($S=0, D1=1$) & 0,435 & 0,535 & 0,485 & 0 & 1  \\ \hline
+        TH2 & Sweep D0 ($S=1, D1=1$) & 0 & 1 & 0,5 & 0 & 1  \\ \hline
+        TH3 & Sweep D1 ($S=0, D0=1$) & 0 & 1 & 0,5 & 0 & 1  \\ \hline
+        TH4 & Sweep D1 ($S=1, D0=1$) & 0,432 & 0,538 & 0,481 & 0 & 1  \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \noindent\textbf{Ghi chú và giải thích các trường hợp khảo sát:}
+    \begin{itemize}
+        \item \textbf{TH1 \& TH2:} Khi tín hiệu chọn kênh $S$ thay đổi trạng thái logic, đường truyền dẫn từ ngõ vào $D_0$ đến ngõ ra được kích hoạt hoặc khóa, quyết định tính chất nghịch lưu đặc tuyến.
+        \item \textbf{TH3 \& TH4:} Đánh giá tương tự khi quét tuyến tính điện áp trên ngõ vào $D_1$. Sự sụt áp qua các cổng truyền (transmission gates) hoặc cấu trúc tĩnh ảnh hưởng đến lề nhiễu logic.
+    \end{itemize}
+
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{mux1_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient MUX Topology 1}
+    \end{figure}
+
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số thời gian và công suất bằng Calculator cho MUX 1}
+        \begin{tabular}{|c|c|c|c|c|c|c|h|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{($\mu$W)} \\ \hline
+        42,82 & 28,93 & 28,85 & 19,27 & 23,66 & 0,35 & ... & 1,21 \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.5\textwidth]{mux1_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.5\textwidth]{mux1_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.5\textwidth]{mux1_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.5\textwidth]{mux1_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống MUX Topology 1 kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{mux1_tpdr.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{mux1_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{mux1_tpdf.png}}
+        \subfigure[Calc $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{mux1_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.52\textwidth]{mux1_tpd.png}}
+        \caption{Các thông số độ trễ MUX Topology 1 kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.5\textwidth]{mux1_static_pwr_0.png}}
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.6\textwidth]{mux1_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động MUX Topology 1}
+    \end{figure}
+\end{itemize}
+\newpage
+\subsection{MUX Topology 2 (MUX Đảo)}
+\begin{itemize}
+    \item \textbf{Schematic và Symbol:}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Schematic MUX1]{\includegraphics[width=\textwidth]{mux2_schematic.png}}
+        \subfigure[Schematic MUX1]{\includegraphics[width=0.6\textwidth]{mux2_symbol.png}}
+        \caption{Sơ đồ nguyên lý và Symbol của MUX1}
+    \end{figure}
+    \item \textbf{Khảo sát DC (4 trường hợp đầy đủ):}
+        \begin{enumerate}
+            \item TH1: Thay đổi D0 ($S=0, D1=1$).
+            \item TH2: Thay đổi D0 ($S=1, D1=1$).
+            \item TH3: Thay đổi D1 ($S=0, D0=1$).
+            \item TH4: Thay đổi D1 ($S=1, D0=1$).
+        \end{enumerate}
+    \begin{figure}[H]
+        \centering
+        \subfigure[DC Sweep TH1]{\includegraphics[width=0.6\textwidth]{mux2_dc_sweep_D0.png}}
+        \subfigure[DC Sweep TH2]{\includegraphics[width=0.6\textwidth]{mux2_dc_sweep_D1.png}}
+        \subfigure[DC Sweep TH3]{\includegraphics[width=0.6\textwidth]{mux2_dc_sweep_D2.png}}
+        \subfigure[DC Sweep TH4]{\includegraphics[width=0.6\textwidth]{mux2_dc_sweep_D3.png}}
+        \caption{Đặc tuyến VTC của MUX Topology 1 trong các trường hợp khảo sát}
+    \end{figure}
+
+    \begin{table}[H]
+        \centering
+        \caption{Các thông số đặc tính tĩnh DC của mạch MUX Topology 2}
+        \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{Case} & \textbf{State} & \textbf{$V_{IL}$ (V)} & \textbf{$V_{IH}$ (V)} & \textbf{$V_M$ (V)} & \textbf{$V_{OL}$ (V)} & \textbf{$V_{OH}$ (V)}\\ \hline
+        TH1 & Sweep D0 ($S=0, D1=1$) & 0,4 & 0,5 & 0,6 & 0 & 1 &  \\ \hline
+        TH2 & Sweep D0 ($S=1, D1=1$) & 0 & 1 & 0,5 & 0 & 1 &  \\ \hline
+        TH3 & Sweep D1 ($S=0, D0=1$) & 0 & 1 & 0,5 & 0 & 1 &  \\ \hline
+        TH4 & Sweep D1 ($S=1, D0=1$) & 0,4 & 0,5 & 0,6 & 0 & 1 &  \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \noindent\textbf{Ghi chú và giải thích các trường hợp khảo sát:}
+    \begin{itemize}
+        \item \textbf{TH1 \& TH2:} Khảo sát đặc tính chuyển mạch tĩnh theo ngõ vào $D_0$ đối với cấu trúc cấu thành thứ hai, theo dõi sụt áp nút nội tại.
+        \item \textbf{TH3 \& TH4:} Đánh giá hoạt động tĩnh dựa trên sự biến thiên mức điện áp ngõ vào $D_1$, phân tích độ đối xứng lề nhiễu logic cao và logic thấp.
+    \end{itemize}
+
+    \item \textbf{Mô phỏng Transient và Đo đạc thông số:}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{mux2_transient_waveforms.png}
+        \caption{Kết quả mô phỏng Transient MUX Topology 2}
+    \end{figure}
+
+    \begin{table}[H]
+        \centering
+        \caption{Kết quả đo đạc thông số thời gian và công suất bằng Calculator cho MUX 2}
+        \begin{tabular}{|c|c|c|c|c|c|c|h|}
+        \hline
+        \textbf{$t_{rise}$} & \textbf{$t_{fall}$} & \textbf{$t_{pdr}$} & \textbf{$t_{pdf}$} & \textbf{$t_{pd}$} & \textbf{Static Pwr 0} & \textbf{Static Pwr 1} & \textbf{Dynamic Pwr} \\ 
+        \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(ps)} & \textbf{(nW)} & \textbf{(nW)} & \textbf{($\mu$W)} \\ \hline
+        42,82 & 28,93 & 28,85 & 19,27 & 23,66 & 0,35 & ... & 1,21 \\ \hline
+        \end{tabular}
+    \end{table}
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{rise}$]{\includegraphics[width=0.5\textwidth]{mux2_trise.png}}
+        \subfigure[Calc $t_{rise}$]{\includegraphics[width=0.5\textwidth]{mux2_trise_calc.png}}
+        \subfigure[Đo $t_{fall}$]{\includegraphics[width=0.5\textwidth]{mux2_tfall.png}}
+        \subfigure[Calc $t_{fall}$]{\includegraphics[width=0.5\textwidth]{mux2_tfall_calc.png}}
+        \caption{Thời gian cạnh lên và cạnh xuống MUX Topology 2 kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Đo $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{mux2_tpdr.png}}
+        \subfigure[Calc $t_{pdr}$]{\includegraphics[width=0.5\textwidth]{mux2_tpdr_calc.png}}
+        \subfigure[Đo $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{mux2_tpdf.png}}
+        \subfigure[Calc $t_{pdf}$]{\includegraphics[width=0.5\textwidth]{mux2_tpdf_calc.png}}
+        \subfigure[Đo $t_{pd}$]{\includegraphics[width=0.5\textwidth]{mux2_tpd.png}}
+        \caption{Các thông số độ trễ MUX Topology 2 kèm Calculator}
+    \end{figure}
+    \begin{figure}[H]
+        \centering
+        \subfigure[Static Pwr (0)]{\includegraphics[width=0.5\textwidth]{mux2_static_pwr_0.png}}
+
+        \subfigure[Dynamic Pwr]{\includegraphics[width=0.5\textwidth]{mux2_dynamic_pwr.png}}
+        \caption{Công suất tĩnh và động MUX Topology 2}
+    \end{figure}
+
+\end{itemize}
+
+\subsection{So sánh và đánh giá hai kiến trúc mạch MUX}
+
+Dựa trên các kết quả mô phỏng đặc tính tĩnh và đặc tính động đã đo đạc ở hai phần trước, cùng với nguyên lý hoạt động nội tại của từng cấu trúc tế bào tiêu chuẩn, ta có thể lập bảng tổng hợp định lượng và đưa ra các đánh giá định tính cho hai kiến trúc MUX Đảo như sau:
+
+\subsubsection{Phân tích chuyên sâu về sự khác biệt giữa hai kiến trúc}
+Thông thường trong thiết kế Standard Cell, hai kiến trúc phổ biến nhất để hiện thực MUX là cấu trúc cổng logic CMOS tĩnh và cấu trúc dùng cổng truyền dẫn. Sự khác biệt về số đo giữa hai Topology bắt nguồn từ chính bản chất vật lý của chúng:
+
+\begin{itemize}
+    \item \textbf{Về cấu trúc và Diện tích:} 
+    Topology sử dụng logic CMOS tĩnh truyền thống đòi hỏi việc xây dựng mạng kéo lên (PUN) bằng PMOS và mạng kéo xuống (PDN) bằng NMOS bù trừ hoàn toàn. Điều này khiến cấu trúc trở nên cồng kềnh, tiêu tốn nhiều transistor (thường từ 10-12 transistor), làm tăng diện tích vật lý chiếm dụng trên tấm Silicon. Ngược lại, Topology áp dụng kỹ thuật cổng truyền (TG) tận dụng đặc tính truyền dẫn tín hiệu trực tiếp của cặp NMOS-PMOS mắc song song. Nó đóng vai trò như các công tắc điện tử lý tưởng, giúp giảm đáng kể số lượng bóng bán dẫn xuống chỉ còn 6-8 transistor, tối ưu hóa đáng kể mật độ tích hợp mạch.
+
+    \item \textbf{Về đặc tính thời gian định thời:}
+    Nhờ đường truyền dẫn trực tiếp, tín hiệu dữ liệu ($D_0, D_1$) trong kiến trúc TG có thể đi thẳng qua cổng truyền đến ngõ vào của tầng nghịch lưu cuối cùng mà không phải tuần tự đi qua nhiều tầng cổng logic cơ bản. Do đó, nếu tính riêng đường trễ từ ngõ vào dữ liệu tới ngõ ra, cấu trúc TG thường cho tốc độ đáp ứng nhanh hơn, cạnh xung dốc hơn và độ trễ $t_{pd}$ thấp hơn. Tuy nhiên, kiến trúc CMOS tĩnh tuy có đường trễ tới hạn dài hơn do cấu trúc mạng nối tiếp/song song, nhưng lại đem lại độ ổn định thời gian rất tốt, ít nhạy cảm với sự biến đổi của điện trở đầu vào.
+
+    \item \textbf{Về điện năng tiêu thụ:}
+    Công suất động của mạch số tỉ lệ thuận với tổng điện dung tải chuyển mạch ($P_{dyn} \propto C_{load} \cdot V_{DD}^2 \cdot f$). Cấu trúc CMOS tĩnh chứa nhiều transistor và nhiều nút nối nội bộ (internal nodes) hơn, sinh ra dung kháng ký sinh lớn. Hệ quả tất yếu là nó sẽ tiêu tốn nhiều năng lượng dạng động hơn trong mỗi chu kỳ đóng cắt. Cấu trúc TG giúp triệt tiêu bớt các nút nội bộ nên tiết kiệm điện năng hơn, nhưng đổi lại, tín hiệu điều khiển kênh ($S$ và $\overline{S}$) yêu cầu phải được cung cấp đồng thời và hoàn toàn đối xứng. Sự lệch pha (skew) giữa hai tín hiệu điều khiển này có thể gây ra hiện tượng chập mạch chớp nhoáng, sinh ra các gai công suất ngoài ý muốn.
+
+    \item \textbf{Về khả năng lái tải và Phục hồi logic:}
+    Các cổng CMOS tĩnh luôn luôn có cấu trúc kết nối ngõ ra trực tiếp đến dải nguồn $V_{DD}$ hoặc $GND$, do đó chúng cung cấp dòng xả/nạp rất mạnh và biên độ điện áp luôn đạt mức đầy đủ. Ngược lại, tín hiệu đi qua hệ thống Transmission Gate có hiện tượng tích lũy nội trở kênh dẫn, dẫn đến tốc độ Slew-rate có xu hướng bị suy giảm khi tải lớn. Việc thiết kế tầng đệm tại ngõ ra của cả hai Topology là bắt buộc để khôi phục mức logic sắc nét và đảm bảo năng lực đẩy dòng cho các tầng mạch số phía sau.
+\end{itemize}
+
+\textbf{Kết luận phần MUX:} 
+Việc lựa chọn Topology nào phụ thuộc hoàn toàn vào bài toán thiết kế cụ thể: Nếu ưu tiên tối đa hóa diện tích và tiết kiệm năng lượng, Topology dùng cổng truyền dẫn (Transmission Gate) là giải pháp hoàn hảo; ngược lại, nếu cần độ ổn định logic tuyệt đối và khả năng lái tải ưu việt trong môi trường nhiễu cao, Topology CMOS tĩnh sẽ được ưu tiên sử dụng.
+
 
 \end{document}
